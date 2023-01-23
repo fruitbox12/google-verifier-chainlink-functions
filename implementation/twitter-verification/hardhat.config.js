@@ -4,6 +4,7 @@ require('hardhat-deploy');
 require('solidity-coverage');
 require('hardhat-gas-reporter');
 require('hardhat-contract-sizer');
+require('./lib/tasks');
 require('dotenv').config();
 
 const POLYGON_RPC_URL = process.env.POLYGON_RPC_URL;
