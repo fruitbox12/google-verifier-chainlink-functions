@@ -1,0 +1,3 @@
+[submodule "lib"]
+	path = lib
+	url = org-25111032@github.com:smartcontractkit/functions-hardhat-starter-kit.git
