@@ -1,12 +1,12 @@
 # Step-by-step Guide (easy mode)
 
 1. The EOA should be whitelisted to deploy a full oracle.
-2. Deploy the oracle (with env variables setup in /lib):
-
-```sh
-cd ../../lib
-npx hardhat functions-deploy-client --network network_name_here --verify true
-```
+2. Create and deploy the FunctionsClient compatible contract (see example in /lib/contracts/FunctionsClient.sol) ; it should be deployed with the Functions Oracle address as a constructor argument (see lib/network-config.js).
 
 3. Get the contract addresses from the output ()
-   0xea6913f789b03dF45D9EE3C42Ba35E287924D159
+   0x0D0bB690F09a6c5D25C5365Dd8f0a84dBd97B937
+
+# To check after pull
+
+- functionsOracle address (helper-hardhat-config.js)
+- Update dev folder (/lib/contracts/dev -> contracts/lib)
