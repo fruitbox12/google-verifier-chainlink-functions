@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "../lib/contracts/dev/functions/FunctionsClient.sol";
+import "./lib/dev/functions/FunctionsClient.sol";
 // import "@chainlink/contracts/src/v0.8/dev/functions/FunctionsClient.sol"; // Once published
 import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 import "./utils/AddressToString.sol";

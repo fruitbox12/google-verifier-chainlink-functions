@@ -9,9 +9,11 @@
 
 # To check after pull
 
-- functionsOracle address (helper-hardhat-config.js)
-- Update lib folder (/lib -> /implementation/twitter-verification/lib)
-  - contracts
-  - FunctionsRequestSimulator
-  - scripts
-  - tasks
+- Update from lib
+  - lib/network-config.js -> network-config.js
+  - lib/contracts -> contracts/lib
+  - tasks/Functions-billing/create -> tasks/create
+  - tasks/Functions-client/request -> tasks/request
+    - for both, module.exports, transform to classic async
+    - for request, update Functions-request-config path
+  - FunctionsRequestSimulator -> tasks/FunctionsRequestSimulator

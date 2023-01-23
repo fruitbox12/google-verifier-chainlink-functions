@@ -4,7 +4,6 @@ require('hardhat-deploy');
 require('solidity-coverage');
 require('hardhat-gas-reporter');
 require('hardhat-contract-sizer');
-require('./lib/tasks');
 require('dotenv').config();
 
 const POLYGON_RPC_URL = process.env.POLYGON_RPC_URL;
@@ -16,7 +15,35 @@ const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY;
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
-    compilers: [{ version: '0.8.16' }, { version: '0.7.0' }],
+    compilers: [
+      {
+        version: '0.8.7',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1_000,
+          },
+        },
+      },
+      {
+        version: '0.6.6',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1_000,
+          },
+        },
+      },
+      {
+        version: '0.4.24',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1_000,
+          },
+        },
+      },
+    ],
   },
   defaultNetwork: 'hardhat',
   networks: {
