@@ -9,7 +9,7 @@ const {
 } = require('../network-config');
 const readline = require('readline-promise').default;
 
-module.exports = async (taskArgs) => {
+module.exports = async (taskArgs, requestConfig) => {
   // A manual gas limit is required as the gas limit estimated by Ethers is not always accurate
   const overrides = {
     gasLimit: 500000,
@@ -50,7 +50,7 @@ module.exports = async (taskArgs) => {
   const registry = await RegistryFactory.attach(registryAddress);
 
   console.log('Simulating Functions request locally...');
-  const requestConfig = require('../functions/Functions-request-config.js');
+  // const requestConfig = require('../functions/Functions-request-config.js');
   const { success, resultLog } = await simulateRequest(requestConfig);
   console.log(`\n${resultLog}`);
 
@@ -172,7 +172,8 @@ module.exports = async (taskArgs) => {
       if (result !== '0x') {
         console.log(
           `Response returned to client contract represented as a hex string: ${result}\n${getDecodedResultLog(
-            require('../functions/Functions-request-config'),
+            // require('../functions/Functions-request-config'),
+            requestConfig,
             result,
           )}`,
         );
