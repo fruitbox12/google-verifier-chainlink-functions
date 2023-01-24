@@ -22,7 +22,7 @@ const ReturnType = {
 };
 
 // Configure the request by setting the fields below
-const requestConfig = (username) => {
+const requestConfig = (username, address) => {
   return {
     // location of source code (only Inline is curently supported)
     codeLocation: Location.Inline,
@@ -49,7 +49,7 @@ const requestConfig = (username) => {
     // args (string only array) can be accessed within the source code with `args[index]` (ie: args[0]).
     // ! -- OVERRIDEN BY THE IMPLEMENTATION --
     // ! @param {string} twitterHandle - The twitter handle to be verified
-    args: [username],
+    args: [username, address],
     // maximum size of a response in bytes
     maxResponseBytes: 256,
     // expected type of the returned value

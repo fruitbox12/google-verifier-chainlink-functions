@@ -2,6 +2,7 @@ const {
   TWITTER_VERIFIER,
   SUB_ID,
   TWITTER_USERNAME,
+  ETHEREUM_ADDRESS,
 } = require('../helper-hardhat-config');
 const requestConfig = require('../functions/Functions-request-config');
 // If you want the console confirmations & simulation
@@ -9,8 +10,8 @@ const requestConfig = require('../functions/Functions-request-config');
 // If you don't want the console confirmations & simulation
 const request = require('../tasks/recklessRequest');
 
-const executeRequest = async (username) => {
-  const config = requestConfig(username);
+const executeRequest = async (username, address) => {
+  const config = requestConfig(username, address);
   const response = await request(
     {
       contract: TWITTER_VERIFIER,
@@ -52,7 +53,7 @@ const executeRequest = async (username) => {
   };
 };
 
-executeRequest(TWITTER_USERNAME)
+executeRequest(TWITTER_USERNAME, ETHEREUM_ADDRESS)
   .then(() => process.exit(0))
   .catch((err) => {
     console.error(err);

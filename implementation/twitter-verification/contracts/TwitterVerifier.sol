@@ -51,17 +51,21 @@ contract TwitterVerifier is FunctionsClient, ConfirmedOwner {
         );
         if (secrets.length > 0) req.addInlineSecrets(secrets);
 
-        // Turn the sender address into a string
-        string memory sender = addressToString(msg.sender);
+        // The following is how we would add some arguments provided in the contract
+        // to the request
+        // In this case, it is not necessary, since the msg.sender will always
+        // be the owner, and not the user
+        // - Turn the sender address into a string
+        // string memory sender = addressToString(msg.sender);
+        // - And add it to the args
+        // string[] memory newArgs = new string[](args.length + 1);
+        // for (uint256 i = 0; i < args.length; i++) {
+        // newArgs[i] = args[i];
+        // }
+        // newArgs[args.length] = sender;
 
-        // And add it to the args
-        string[] memory newArgs = new string[](args.length + 1);
-        for (uint256 i = 0; i < args.length; i++) {
-            newArgs[i] = args[i];
-        }
-        newArgs[args.length] = sender;
-
-        req.addArgs(newArgs);
+        // req.addArgs(newArgs);
+        req.addArgs(args);
 
         bytes32 assignedReqID = sendRequest(
             req,
