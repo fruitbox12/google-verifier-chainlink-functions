@@ -59,14 +59,17 @@ export default create((set, get) => ({
 
       // If data is null or doesn't have all fields, return null
       if (!data || !data.result || !data.username || !data.address) {
-        data = null;
+        data.result = -1;
         error = true;
       }
 
       return {
         id,
         requestId,
-        data,
+        data: {
+          ...data,
+          timestamp: item.timestamp,
+        },
         error,
       };
     });
