@@ -1,0 +1,36 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: TwitterVerifier
+    network: mumbai
+    source:
+      address: '0xbE40a3f619C855A1C059f3b684398703cd51609d'
+      abi: TwitterVerifier
+      startBlock: 31318695
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - OCRResponse
+        - OwnershipTransferRequested
+        - OwnershipTransferred
+        - RequestFulfilled
+        - RequestSent
+      abis:
+        - name: TwitterVerifier
+          file: ./abis/TwitterVerifier.json
+      eventHandlers:
+        - event: OCRResponse(indexed bytes32,bytes,bytes)
+          handler: handleOCRResponse
+        - event: OwnershipTransferRequested(indexed address,indexed address)
+          handler: handleOwnershipTransferRequested
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: RequestFulfilled(indexed bytes32)
+          handler: handleRequestFulfilled
+        - event: RequestSent(indexed bytes32)
+          handler: handleRequestSent
+      file: ./src/twitter-verifier.ts
