@@ -1,9 +1,13 @@
 import { Tooltip } from 'antd';
+import { useWidth } from '../../hooks';
 
 const Address = ({ address }) => {
-  //   if (!address) return null;
+  const width = useWidth();
+
   const slicedAddress = address
-    ? address.slice(0, 6) + '...' + address.slice(-6)
+    ? width > 900
+      ? address
+      : address.slice(0, 6) + '...' + address.slice(-6)
     : null;
 
   return (

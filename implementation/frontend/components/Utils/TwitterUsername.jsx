@@ -1,5 +1,13 @@
+import { useWidth } from '../../hooks';
+
 const TwitterUsername = ({ username }) => {
-  const displayed = username ? `@ ${username}` : null;
+  const width = useWidth();
+
+  const displayed = username
+    ? width > 700
+      ? `@ ${username}`
+      : username
+    : null;
   return (
     <a
       href={`https://twitter.com/${username}`}
