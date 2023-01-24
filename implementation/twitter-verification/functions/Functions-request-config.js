@@ -49,6 +49,7 @@ const requestConfig = (username, address) => {
     // args (string only array) can be accessed within the source code with `args[index]` (ie: args[0]).
     // ! -- OVERRIDEN BY THE IMPLEMENTATION --
     // ! @param {string} twitterHandle - The twitter handle to be verified
+    // ! @param {string} ethereumAddress - The ethereum address to be verified
     args: [username, address],
     // maximum size of a response in bytes
     maxResponseBytes: 256,
