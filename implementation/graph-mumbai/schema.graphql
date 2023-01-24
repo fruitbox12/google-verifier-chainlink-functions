@@ -3,4 +3,5 @@ type TwitterVerificationRequest @entity {
   count: BigInt!
   requestId: Bytes! # bytes32
   result: Bytes! # bytes
+  timestamp: BigInt!
 }

@@ -7,6 +7,7 @@ const config = {
         id
         requestId
         result
+        timestamp
       }
     }
   `,

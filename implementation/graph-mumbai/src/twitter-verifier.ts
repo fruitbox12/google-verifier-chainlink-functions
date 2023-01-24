@@ -29,6 +29,7 @@ export function handleOCRResponse(event: OCRResponse): void {
   // Entity fields can be set based on event parameters
   entity.requestId = event.params.requestId;
   entity.result = event.params.result;
+  entity.timestamp = event.block.timestamp;
 
   // Entities can be written to the store with `.save()`
   entity.save();
