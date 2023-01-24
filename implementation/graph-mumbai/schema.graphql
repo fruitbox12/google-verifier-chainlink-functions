@@ -1,4 +1,4 @@
-type ExampleEntity @entity {
+type TwitterVerificationRequest @entity {
   id: ID!
   count: BigInt!
   requestId: Bytes! # bytes32
