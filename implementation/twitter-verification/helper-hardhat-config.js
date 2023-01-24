@@ -1,7 +1,7 @@
 const developmentChains = ['hardhat', 'localhost'];
 
 const TWITTER_VERIFIER = '0xdb4c4c35E9B59a48E9931476753f5A183cD7280d';
-const SUB_ID = 18;
+const SUB_ID = 20;
 
 // Username & address to test
 const TWITTER_USERNAME = 'testAcc09617400';
