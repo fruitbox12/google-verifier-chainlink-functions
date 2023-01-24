@@ -1,11 +1,8 @@
 /**
- * @note The same as request.js, without the console confirmations
+ * @note The same as request.js, without the console confirmations & simulation
  */
 
-// TODO Remove console confirmations
-
 const {
-  simulateRequest,
   buildRequest,
   getDecodedResultLog,
 } = require('./FunctionsRequestSimulator');
@@ -13,7 +10,7 @@ const {
   VERIFICATION_BLOCK_CONFIRMATIONS,
   networkConfig,
 } = require('../network-config');
-const readline = require('readline-promise').default;
+let returned = { result: false, billing: false, error: false };
 
 module.exports = async (taskArgs, requestConfig) => {
   // A manual gas limit is required as the gas limit estimated by Ethers is not always accurate
@@ -55,25 +52,10 @@ module.exports = async (taskArgs, requestConfig) => {
   );
   const registry = await RegistryFactory.attach(registryAddress);
 
-  console.log('Simulating Functions request locally...');
-  // const requestConfig = require('../functions/Functions-request-config.js');
-  const { success, resultLog } = await simulateRequest(requestConfig);
-  console.log(`\n${resultLog}`);
+  // ? Removed the simulated request
 
   // If the simulated JavaScript source code contains an error, confirm the user still wants to continue
-  if (!success) {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-    const q1answer = await rl.questionAsync(
-      'There was an error when running the JavaScript source code for the request.\nContinue? (y) Yes / (n) No\n',
-    );
-    rl.close();
-    if (q1answer.toLowerCase() !== 'y' && q1answer.toLowerCase() !== 'yes') {
-      return;
-    }
-  }
+  // ? Removed the confirmation if simulated request failed
 
   // Check that the subscription is valid
   let subInfo;
@@ -135,20 +117,11 @@ module.exports = async (taskArgs, requestConfig) => {
       18,
     )} LINK`,
   );
-  // Ask for confirmation before initiating the request on-chain
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-  let cont = false;
-  const q2answer = await rl.questionAsync('Continue? (y) Yes / (n) No\n');
-  rl.close();
-  if (q2answer.toLowerCase() !== 'y' && q2answer.toLowerCase() !== 'yes') {
-    return;
-  }
+
+  // ? Removed the confirmation for x cost
 
   // Use a promise to wait & listen for the fulfillment event before returning
-  await new Promise(async (resolve, reject) => {
+  return await new Promise(async (resolve, reject) => {
     let requestId;
 
     // Initate the listeners before making the request
@@ -157,12 +130,14 @@ module.exports = async (taskArgs, requestConfig) => {
       if (requestId == eventRequestId) {
         console.log('Error in client contract callback function');
         console.log(msg);
+        returned.error = true;
       }
     });
     oracle.on('UserCallbackRawError', async (eventRequestId, msg) => {
       if (requestId == eventRequestId) {
         console.log('Raw error in client contract callback function');
         console.log(Buffer.from(msg, 'hex').toString());
+        returned.error = true;
       }
     });
     // Listen for successful fulfillment
@@ -176,13 +151,23 @@ module.exports = async (taskArgs, requestConfig) => {
 
       console.log(`Request ${requestId} fulfilled!`);
       if (result !== '0x') {
-        console.log(
-          `Response returned to client contract represented as a hex string: ${result}\n${getDecodedResultLog(
-            // require('../functions/Functions-request-config'),
-            requestConfig,
-            result,
-          )}`,
+        const decoded = getDecodedResultLog(
+          // require('../functions/Functions-request-config'),
+          requestConfig,
+          result,
         );
+        console.log(
+          `Response returned to client contract represented as a hex string: ${result}\n${decoded}`,
+        );
+
+        // We decode it ourselves to keep the simulateRequest function intact
+        // with decodedOutput = BigInt("0x" + successResult.slice(2).slice(-64))
+        const decodedOutput = BigInt('0x' + result.slice(2).slice(-64));
+
+        returned.result = {
+          hex: result,
+          decoded: decodedOutput.toString(),
+        };
       }
       if (err !== '0x') {
         console.log(
@@ -191,10 +176,12 @@ module.exports = async (taskArgs, requestConfig) => {
             'hex',
           )}"\n`,
         );
+
+        returned.error = true;
       }
       ocrResponseEventReceived = true;
       if (billingEndEventRecieved) {
-        return resolve();
+        return resolve(returned);
       }
     });
     // Listen for the BillingEnd event, log cost breakdown & resolve
@@ -209,35 +196,34 @@ module.exports = async (taskArgs, requestConfig) => {
         eventSuccess,
       ) => {
         if (requestId == eventRequestId) {
+          const transmissionCost = hre.ethers.utils.formatUnits(
+            eventTransmitterPayment,
+            18,
+          );
+          const baseFee = hre.ethers.utils.formatUnits(eventSignerPayment, 18);
+          const totalCost = hre.ethers.utils.formatUnits(eventTotalCost, 18);
           // Check for a successful request & log a mesage if the fulfillment was not successful
-          console.log(
-            `Transmission cost: ${hre.ethers.utils.formatUnits(
-              eventTransmitterPayment,
-              18,
-            )} LINK`,
-          );
-          console.log(
-            `Base fee: ${hre.ethers.utils.formatUnits(
-              eventSignerPayment,
-              18,
-            )} LINK`,
-          );
-          console.log(
-            `Total cost: ${hre.ethers.utils.formatUnits(
-              eventTotalCost,
-              18,
-            )} LINK\n`,
-          );
+          console.log(`Transmission cost: ${transmissionCost} LINK`);
+          console.log(`Base fee: ${baseFee} LINK`);
+          console.log(`Total cost: ${totalCost} LINK\n`);
           if (!eventSuccess) {
             console.log(
               'Error encountered when calling fulfillRequest in client contract.\n' +
                 'Ensure the fulfillRequest function in the client contract is correct and the --gaslimit is sufficent.',
             );
-            return resolve();
+
+            returned.error = true;
           }
+
           billingEndEventRecieved = true;
+          returned.billing = {
+            transmissionCost,
+            baseFee,
+            totalCost,
+          };
+
           if (ocrResponseEventReceived) {
-            return resolve();
+            return resolve(returned);
           }
         }
       },
