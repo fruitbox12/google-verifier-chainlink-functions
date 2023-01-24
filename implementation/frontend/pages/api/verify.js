@@ -1,4 +1,5 @@
-import { useEncryption } from '../../hooks';
+const executeRequest = require('./systems/scripts/execute-request');
+const { useEncryption } = require('../../hooks');
 const { decrypt, testMatch } = useEncryption();
 
 const handler = async (req, res) => {
@@ -12,12 +13,8 @@ const handler = async (req, res) => {
     return res.status(401).json({ error: 'Invalid encryption' });
   }
 
-  const result = await executeRequest(username, address);
+  const result = await executeRequest(username, address, 'mumbai', 'provider');
   return res.status(200).json(result);
-};
-
-const executeRequest = async (username, address) => {
-  //
 };
 
 export default handler;

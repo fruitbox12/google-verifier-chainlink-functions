@@ -1,33 +1,36 @@
-/**
- * @note The same as request.js, without the console confirmations & simulation
- */
-
-const {
-  buildRequest,
-  getDecodedResultLog,
-} = require('./FunctionsRequestSimulator');
+const { ethers } = require('ethers');
+const { buildRequest } = require('./FunctionsRequestSimulator');
 const {
   VERIFICATION_BLOCK_CONFIRMATIONS,
   networkConfig,
 } = require('../network-config');
+
+const twitterVerifierAbi = '../abi/TwitterVerifier.json';
+const functionsOracleAbi = '../abi/FunctionsOracle.json';
+const functionsBillingRegistryAbi = '../abi/FunctionsBillingRegistry.json';
+
 let returned = { result: false, billing: false, error: false };
 
-module.exports = async (taskArgs, requestConfig) => {
+module.exports = async (taskArgs, requestConfig, network) => {
   // A manual gas limit is required as the gas limit estimated by Ethers is not always accurate
   const overrides = {
     gasLimit: 500000,
   };
 
-  if (network.name === 'hardhat') {
-    throw Error(
-      'This command cannot be used on a local development chain.  Specify a valid network or simulate an Functions request locally with "npx hardhat functions-simulate".',
-    );
-  }
-
-  if (network.name === 'goerli') {
+  if (network === 'goerli') {
     overrides.maxPriorityFeePerGas = ethers.utils.parseUnits('50', 'gwei');
     overrides.maxFeePerGas = ethers.utils.parseUnits('50', 'gwei');
   }
+
+  // Setup a provider we can use in ethers.Contract
+  // use process.env.rpcUrl and process.env.privateKey
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_MUMBAI_RPC_URL,
+  );
+  const signer = new ethers.Wallet(
+    process.env.NEXT_PUBLIC_PRIVATE_KEY,
+    provider,
+  );
 
   // Get the required parameters
   const contractAddr = taskArgs.contract;
@@ -36,26 +39,24 @@ module.exports = async (taskArgs, requestConfig) => {
   if (gasLimit > 300000) {
     throw Error('Gas limit must be less than or equal to 300,000');
   }
+  console.log(twitterVerifierAbi);
 
-  // Attach to the required contracts
-  const clientContractFactory = await ethers.getContractFactory(
-    'FunctionsConsumer',
+  const clientContract = new ethers.Contract(
+    contractAddr,
+    twitterVerifierAbi,
+    signer,
   );
-  const clientContract = clientContractFactory.attach(contractAddr);
-  const OracleFactory = await ethers.getContractFactory('FunctionsOracle');
-  const oracle = await OracleFactory.attach(
+  const oracle = new ethers.Contract(
     networkConfig[network.name]['functionsOracle'],
+    functionsOracleAbi,
+    signer,
   );
   const registryAddress = await oracle.getRegistry();
-  const RegistryFactory = await ethers.getContractFactory(
-    'FunctionsBillingRegistry',
+  const registry = new ethers.Contract(
+    registryAddress,
+    functionsBillingRegistryAbi,
+    signer,
   );
-  const registry = await RegistryFactory.attach(registryAddress);
-
-  // ? Removed the simulated request
-
-  // If the simulated JavaScript source code contains an error, confirm the user still wants to continue
-  // ? Removed the confirmation if simulated request failed
 
   // Check that the subscription is valid
   let subInfo;
@@ -84,41 +85,8 @@ module.exports = async (taskArgs, requestConfig) => {
   // Build the parameters to make a request from the client contract
   const request = await buildRequest(requestConfig);
 
-  // Estimate the cost of the request
-  const {
-    lastBaseFeePerGas,
-    maxPriorityFeePerGas,
-  } = await hre.ethers.provider.getFeeData();
-  const estimatedCostJuels = await clientContract.estimateCost(
-    [
-      0, // Inline
-      0, // Inline
-      0, // JavaScript
-      request.source,
-      request.secrets ?? [],
-      request.args ?? [],
-    ],
-    subscriptionId,
-    gasLimit,
-    maxPriorityFeePerGas.add(lastBaseFeePerGas),
-  );
-  // Ensure the subscription has a sufficent balance
-  const linkBalance = subInfo[0];
-  if (subInfo[0].lt(estimatedCostJuels)) {
-    throw Error(
-      `Subscription ${subscriptionId} does not have sufficent funds. The estimated cost is ${estimatedCostJuels} Juels LINK, but has balance of ${linkBalance}`,
-    );
-  }
-
-  // Print the estimated cost of the request
-  console.log(
-    `\nIf all ${gasLimit} callback gas is used, this request is estimated to cost ${hre.ethers.utils.formatUnits(
-      estimatedCostJuels,
-      18,
-    )} LINK`,
-  );
-
-  // ? Removed the confirmation for x cost
+  // Loose the cost estimation here ; it's low enough that
+  // it's not worth the effort to get it right in that non-hardhat environment
 
   // Use a promise to wait & listen for the fulfillment event before returning
   return await new Promise(async (resolve, reject) => {
@@ -151,16 +119,6 @@ module.exports = async (taskArgs, requestConfig) => {
 
       console.log(`Request ${requestId} fulfilled!`);
       if (result !== '0x') {
-        const decoded = getDecodedResultLog(
-          // require('../functions/Functions-request-config'),
-          requestConfig,
-          result,
-        );
-        console.log(
-          `Response returned to client contract represented as a hex string: ${result}\n${decoded}`,
-        );
-
-        // We decode it ourselves to keep the simulateRequest function intact
         const decodedOutput = Buffer.from(result.slice(2), 'hex').toString();
 
         returned.result = {
@@ -195,12 +153,12 @@ module.exports = async (taskArgs, requestConfig) => {
         eventSuccess,
       ) => {
         if (requestId == eventRequestId) {
-          const transmissionCost = hre.ethers.utils.formatUnits(
+          const transmissionCost = ethers.utils.formatUnits(
             eventTransmitterPayment,
             18,
           );
-          const baseFee = hre.ethers.utils.formatUnits(eventSignerPayment, 18);
-          const totalCost = hre.ethers.utils.formatUnits(eventTotalCost, 18);
+          const baseFee = ethers.utils.formatUnits(eventSignerPayment, 18);
+          const totalCost = ethers.utils.formatUnits(eventTotalCost, 18);
           // Check for a successful request & log a mesage if the fulfillment was not successful
           console.log(`Transmission cost: ${transmissionCost} LINK`);
           console.log(`Base fee: ${baseFee} LINK`);
