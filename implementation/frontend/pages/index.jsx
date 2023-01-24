@@ -12,9 +12,7 @@ const Home = () => {
       <Header />
       <main>
         <div className='header'>
-          For testing purpose, you can verify an account multiple times, which
-          will however not create multiple entries in the table.
-          <h1 className='title'>Verified accounts</h1>
+          <h1 className='title'>Last verification requests</h1>
           <Tooltip
             title={
               !isConnected
