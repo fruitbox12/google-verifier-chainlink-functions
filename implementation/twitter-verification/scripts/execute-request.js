@@ -20,21 +20,36 @@ const executeRequest = async (username) => {
     config,
   );
 
-  // If used with recklessRequest.js, it should return
-  // response = {
-  //   result: {
-  //     hex: 'result_in_hex',
-  //     decoded: 'result_as_string_number',
-  //   },
-  //   billing: {
-  //     transmissionCost: 'transmission_cost',
-  //     baseFee: 'base_fee',
-  //     totalCost: 'total_cost',
-  //   },
-  //   error: true / false,
-  // };
+  /*
+  If used with recklessRequest.js, it should return
+  response = {
+    result: {
+      hex: 'result_in_hex',
+      decoded: 'result_as_string',
+    },
+    billing: {
+      transmissionCost: 'transmission_cost',
+      baseFee: 'base_fee',
+      totalCost: 'total_cost',
+    },
+    error: true / false,
+  };
+  */
 
-  return response;
+  // response.result.decoded will be a string in the format:
+  // result,username,address
+
+  const fields = ['result', 'username', 'address'];
+  const obj = response.result.decoded.split(',').reduce((acc, cur, i) => {
+    acc[fields[i]] = cur;
+    return acc;
+  }, {});
+
+  return {
+    data: obj,
+    billing: response.billing,
+    error: response.error,
+  };
 };
 
 executeRequest(TWITTER_USERNAME)

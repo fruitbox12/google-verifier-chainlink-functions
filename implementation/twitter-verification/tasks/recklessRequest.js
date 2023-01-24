@@ -161,12 +161,11 @@ module.exports = async (taskArgs, requestConfig) => {
         );
 
         // We decode it ourselves to keep the simulateRequest function intact
-        // with decodedOutput = BigInt("0x" + successResult.slice(2).slice(-64))
-        const decodedOutput = BigInt('0x' + result.slice(2).slice(-64));
+        const decodedOutput = Buffer.from(result.slice(2), 'hex').toString();
 
         returned.result = {
           hex: result,
-          decoded: decodedOutput.toString(),
+          decoded: decodedOutput,
         };
       }
       if (err !== '0x') {

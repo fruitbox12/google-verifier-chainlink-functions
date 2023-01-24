@@ -53,7 +53,7 @@ const requestConfig = (username) => {
     // maximum size of a response in bytes
     maxResponseBytes: 256,
     // expected type of the returned value
-    expectedReturnType: ReturnType.uint256,
+    expectedReturnType: ReturnType.string,
   };
 };
 
