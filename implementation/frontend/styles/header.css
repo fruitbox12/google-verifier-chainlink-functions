@@ -1,0 +1,20 @@
+header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  justify-items: flex-start;
+  padding: 1rem 2rem;
+  /* light bottom border */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+header .title {
+  font-size: 1.5em;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  text-transform: uppercase;
+}

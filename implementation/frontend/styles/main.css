@@ -1,0 +1,21 @@
+main {
+  padding: 1rem 2rem;
+}
+
+/* Header */
+main .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+/* Title */
+main h1 {
+  color: var(--color-purple);
+  font-size: 1.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin: 0;
+}

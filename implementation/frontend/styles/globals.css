@@ -1,9 +1,21 @@
+:root {
+  /* Fonts */
+  --font-main: 'Futura PT', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+  /* Colors */
+  --color-purple: #5d16a6;
+  --color-blue: #9683ec;
+  --color-yellow: #f7b801;
+  --color-orange-light: #f18701;
+  --color-orange-dark: #f35b04;
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: var(--font-main);
 }
 
 a {
@@ -13,4 +25,11 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+button:not(.iekbcc0) {
+  font-weight: 300 !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
 }
