@@ -1,11 +1,14 @@
+import { useAccount } from 'wagmi';
+import { Button, Tooltip } from 'antd';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import VerifiedTable from '../components/VerifiedTable';
-import { useAccount } from 'wagmi';
-import { Button, Tooltip } from 'antd';
+import VerificationModal from '../components/VerificationModal';
+import stores from '../stores';
 
 const Home = () => {
   const { isConnected } = useAccount();
+  const { setIsModalOpen } = stores.useVerification();
 
   return (
     <div className='container'>
@@ -21,13 +24,18 @@ const Home = () => {
             }
             placement='bottom'
           >
-            <Button type='primary' disabled={!isConnected}>
+            <Button
+              type='primary'
+              disabled={!isConnected}
+              onClick={() => setIsModalOpen(true)}
+            >
               Verify your account
             </Button>
           </Tooltip>
         </div>
 
         <VerifiedTable />
+        <VerificationModal />
       </main>
 
       <Footer />
