@@ -1,6 +1,15 @@
+import { gql } from '@apollo/client';
+
 const config = {
-  theGraphUrl:
-    'https://api.thegraph.com/subgraphs/name/polar0/twitter-verifier-mumbai',
+  getTwitterVerificationRequests: gql`
+    query GetTwitterVerificationRequests {
+      twitterVerificationRequests {
+        id
+        requestId
+        result
+      }
+    }
+  `,
 };
 
 export default config;

@@ -2,6 +2,7 @@ import '../styles/index.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import Head from 'next/head';
 import { ConfigProvider } from 'antd';
+// import { ApolloClient, InMemoryCache } from '@apollo/client';
 import {
   RainbowKitProvider,
   getDefaultWallets,
@@ -39,6 +40,11 @@ const wagmiClient = createClient({
   webSocketProvider,
 });
 
+// const client = new ApolloClient({
+//   cache: new InMemoryCache(),
+//   uri: process.env.NEXT_PUBLIC_GRAPH_ENDPOINT,
+// });
+
 const MyApp = ({ Component, pageProps }) => {
   return (
     <>
@@ -64,7 +70,9 @@ const MyApp = ({ Component, pageProps }) => {
               },
             }}
           >
+            {/* <ApolloProvider client={client}> */}
             <Component {...pageProps} />
+            {/* </ApolloProvider> */}
           </ConfigProvider>
         </RainbowKitProvider>
       </WagmiConfig>
