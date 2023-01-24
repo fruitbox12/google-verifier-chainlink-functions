@@ -1,7 +1,7 @@
 const {
   VERIFICATION_BLOCK_CONFIRMATIONS,
   networkConfig,
-} = require('../../network-config');
+} = require('../network-config');
 
 module.exports = async (taskArgs) => {
   if (network.name === 'hardhat') {
