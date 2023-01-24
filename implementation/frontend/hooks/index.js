@@ -1,4 +1,5 @@
+import useEncryption from './useEncryption';
 import useSearch from './useSearch';
 import useWidth from './useWidth';
 
-export { useSearch, useWidth };
+export { useEncryption, useSearch, useWidth };
