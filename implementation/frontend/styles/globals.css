@@ -9,6 +9,7 @@
   --color-yellow: #f7b801;
   --color-orange-light: #f18701;
   --color-orange-dark: #f35b04;
+  --color-green: #00b159;
 }
 
 html,
@@ -19,7 +20,8 @@ body {
 }
 
 a {
-  color: inherit;
+  color: var(--color-blue);
+  font-weight: 600;
   text-decoration: none;
 }
 
