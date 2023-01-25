@@ -14,10 +14,13 @@ const executeRequest = async (username, address, network) => {
   );
 
   const fields = ['result', 'username', 'address'];
-  const obj = response.result.decoded.split(',').reduce((acc, cur, i) => {
-    acc[fields[i]] = cur;
-    return acc;
-  }, {});
+
+  const obj = response.error
+    ? null
+    : response.result.decoded.split(',').reduce((acc, cur, i) => {
+        acc[fields[i]] = cur;
+        return acc;
+      }, {});
 
   return {
     data: obj,
