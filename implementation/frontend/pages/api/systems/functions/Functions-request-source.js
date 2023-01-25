@@ -69,13 +69,18 @@ if (tweetsRes.error) {
 
 // If it's successful
 const tweets = tweetsRes.data.data;
-const tweetTexts = tweets.map((tweet) => tweet.text);
-// Check if any of the last 10 tweets include the required string
-const res = tweetTexts.some((text) =>
-  text.toLowerCase().includes(requiredStringIncluded.toLowerCase()),
-);
-// If so, response = 1, if not response = 0
-result = res ? 1 : 0;
+try {
+  const tweetTexts =
+    tweets && tweets.length > 0 ? tweets.map((tweet) => tweet.text) : [];
+  // Check if any of the last 10 tweets include the required string
+  const res = tweetTexts.some((text) =>
+    text.toLowerCase().includes(requiredStringIncluded.toLowerCase()),
+  );
+  // If so, response = 1, if not response = 0
+  result = res ? 1 : 0;
+} catch (e) {
+  result = -1;
+}
 
 // Return 1 (verified) or 0 (not verified) + username + address
 // If something went wrong, yet no error was thrown, result will return -1
