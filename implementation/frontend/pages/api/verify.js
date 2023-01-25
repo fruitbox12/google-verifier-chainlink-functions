@@ -13,7 +13,7 @@ const handler = async (req, res) => {
     return res.status(401).json({ error: 'Invalid encryption' });
   }
 
-  const result = await executeRequest(username, address, 'mumbai', 'provider');
+  const result = await executeRequest(username, address, 'mumbai');
   return res.status(200).json(result);
 };
 

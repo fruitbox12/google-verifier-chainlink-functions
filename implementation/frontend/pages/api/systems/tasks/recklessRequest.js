@@ -5,9 +5,9 @@ const {
   networkConfig,
 } = require('../network-config');
 
-const twitterVerifierAbi = '../abi/TwitterVerifier.json';
-const functionsOracleAbi = '../abi/FunctionsOracle.json';
-const functionsBillingRegistryAbi = '../abi/FunctionsBillingRegistry.json';
+const twitterVerifierAbi = require('../abi/TwitterVerifier.json');
+const functionsOracleAbi = require('../abi/FunctionsOracle.json');
+const functionsBillingRegistryAbi = require('../abi/FunctionsBillingRegistry.json');
 
 let returned = { result: false, billing: false, error: false };
 
@@ -39,7 +39,6 @@ module.exports = async (taskArgs, requestConfig, network) => {
   if (gasLimit > 300000) {
     throw Error('Gas limit must be less than or equal to 300,000');
   }
-  console.log(twitterVerifierAbi);
 
   const clientContract = new ethers.Contract(
     contractAddr,
@@ -47,7 +46,7 @@ module.exports = async (taskArgs, requestConfig, network) => {
     signer,
   );
   const oracle = new ethers.Contract(
-    networkConfig[network.name]['functionsOracle'],
+    networkConfig[network]['functionsOracle'],
     functionsOracleAbi,
     signer,
   );
