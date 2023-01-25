@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { Button, Tooltip } from 'antd';
 import Header from '../components/Header';
@@ -9,6 +10,15 @@ import stores from '../stores';
 const Home = () => {
   const { isConnected } = useAccount();
   const { setIsModalOpen } = stores.useVerification();
+  const [isReallyConnected, setIsReallyConnected] = useState(false);
+
+  // We need to use such a trick because the isConnected hook from wagmi is broken
+  // It tells different values to the frontend and the server
+  useEffect(() => {
+    if (isConnected) {
+      setIsReallyConnected(true);
+    }
+  }, [isConnected]);
 
   return (
     <div className='container'>
@@ -18,15 +28,15 @@ const Home = () => {
           <h1 className='title'>Last verification requests</h1>
           <Tooltip
             title={
-              !isConnected
-                ? 'You need to connect your wallet to verify your account'
-                : ''
+              isReallyConnected
+                ? ''
+                : 'You need to connect your wallet to verify your account'
             }
             placement='bottom'
           >
             <Button
               type='primary'
-              disabled={!isConnected}
+              disabled={!isReallyConnected}
               onClick={() => setIsModalOpen(true)}
             >
               Verify your account
