@@ -9,7 +9,13 @@ const twitterVerifierAbi = require('../abi/TwitterVerifier.json');
 const functionsOracleAbi = require('../abi/FunctionsOracle.json');
 const functionsBillingRegistryAbi = require('../abi/FunctionsBillingRegistry.json');
 
-let returned = { result: false, billing: false, error: false };
+let returned = { result: false, billing: false, error: false, errorMsg: null };
+
+const returnError = (msg) => {
+  returned.error = true;
+  returned.errorMsg = msg;
+  return returned;
+};
 
 module.exports = async (taskArgs, requestConfig, network) => {
   // A manual gas limit is required as the gas limit estimated by Ethers is not always accurate
@@ -23,7 +29,6 @@ module.exports = async (taskArgs, requestConfig, network) => {
   }
 
   // Setup a provider we can use in ethers.Contract
-  // use process.env.rpcUrl and process.env.privateKey
   const provider = new ethers.providers.JsonRpcProvider(
     process.env.NEXT_PUBLIC_MUMBAI_RPC_URL,
   );
@@ -61,18 +66,18 @@ module.exports = async (taskArgs, requestConfig, network) => {
   let subInfo;
   try {
     subInfo = await registry.getSubscription(subscriptionId);
-  } catch (error) {
-    if (error.errorName === 'InvalidSubscription') {
-      throw Error(
+  } catch (err) {
+    if (err.errorName === 'InvalidSubscription')
+      return returnError(
         `Subscription ID "${subscriptionId}" is invalid or does not exist`,
       );
-    }
-    throw error;
+
+    return returnError(err.message);
   }
   // Validate the client contract has been authorized to use the subscription
   const existingConsumers = subInfo[2].map((addr) => addr.toLowerCase());
   if (!existingConsumers.includes(contractAddr.toLowerCase())) {
-    throw Error(
+    return returnError(
       `Consumer contract ${contractAddr} is not registered to use subscription ${subscriptionId}`,
     );
   }
@@ -97,14 +102,20 @@ module.exports = async (taskArgs, requestConfig, network) => {
       if (requestId == eventRequestId) {
         console.log('Error in client contract callback function');
         console.log(msg);
+
         returned.error = true;
+        returned.errorMsg = 'Error in client contract callback function';
+        resolve(returned);
       }
     });
     oracle.on('UserCallbackRawError', async (eventRequestId, msg) => {
       if (requestId == eventRequestId) {
         console.log('Raw error in client contract callback function');
         console.log(Buffer.from(msg, 'hex').toString());
+
         returned.error = true;
+        returned.errorMsg = 'Raw error in client contract callback function';
+        resolve(returned);
       }
     });
     // Listen for successful fulfillment
@@ -115,9 +126,13 @@ module.exports = async (taskArgs, requestConfig, network) => {
       if (eventRequestId !== requestId) {
         return;
       }
-
       console.log(`Request ${requestId} fulfilled!`);
+
       if (result !== '0x') {
+        console.log(
+          `Response returned to client contract represented as a hex string: ${result}\n${decoded}`,
+        );
+
         const decodedOutput = Buffer.from(result.slice(2), 'hex').toString();
 
         returned.result = {
@@ -134,12 +149,13 @@ module.exports = async (taskArgs, requestConfig, network) => {
         );
 
         returned.error = true;
+        returned.errorMsg = Buffer.from(err.slice(2), 'hex').toString();
       }
+
       ocrResponseEventReceived = true;
-      if (billingEndEventRecieved) {
-        return resolve(returned);
-      }
+      if (billingEndEventRecieved) return resolve(returned);
     });
+
     // Listen for the BillingEnd event, log cost breakdown & resolve
     registry.on(
       'BillingEnd',
@@ -158,6 +174,7 @@ module.exports = async (taskArgs, requestConfig, network) => {
           );
           const baseFee = ethers.utils.formatUnits(eventSignerPayment, 18);
           const totalCost = ethers.utils.formatUnits(eventTotalCost, 18);
+
           // Check for a successful request & log a mesage if the fulfillment was not successful
           console.log(`Transmission cost: ${transmissionCost} LINK`);
           console.log(`Base fee: ${baseFee} LINK`);
@@ -169,6 +186,10 @@ module.exports = async (taskArgs, requestConfig, network) => {
             );
 
             returned.error = true;
+            returned.errorMsg = `Error encountered when calling fulfillRequest in client contract.\n
+              Ensure the fulfillRequest function in the client contract is correct and the --gaslimit is sufficent.`;
+
+            return resolve(returned);
           }
 
           billingEndEventRecieved = true;
@@ -178,15 +199,13 @@ module.exports = async (taskArgs, requestConfig, network) => {
             totalCost,
           };
 
-          if (ocrResponseEventReceived) {
-            return resolve(returned);
-          }
+          if (ocrResponseEventReceived) return resolve(returned);
         }
       },
     );
     // Initiate the on-chain request after all listeners are initalized
     console.log(
-      `\nRequesting new data for FunctionsConsumer contract ${contractAddr} on network ${network.name}`,
+      `\nRequesting new data for FunctionsConsumer contract ${contractAddr} on network ${network}`,
     );
     const requestTx = await clientContract.executeRequest(
       request.source,
@@ -196,14 +215,16 @@ module.exports = async (taskArgs, requestConfig, network) => {
       gasLimit,
       overrides,
     );
+
     // If a response is not received within 5 minutes, the request has failed
-    setTimeout(
-      () =>
-        reject(
+    setTimeout(() => {
+      resolve(
+        returnError(
           'A response not received within 5 minutes of the request being initiated and has been canceled. Your subscription was not charged. Please make a new request.',
         ),
-      300_000,
-    );
+      );
+    }, 300_000);
+
     console.log(
       `Waiting ${VERIFICATION_BLOCK_CONFIRMATIONS} blocks for transaction ${requestTx.hash} to be confirmed...`,
     );
