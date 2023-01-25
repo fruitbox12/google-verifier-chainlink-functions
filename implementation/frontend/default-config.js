@@ -2,8 +2,12 @@ import { gql } from '@apollo/client';
 
 const config = {
   getTwitterVerificationRequests: gql`
-    query GetTwitterVerificationRequests {
-      twitterVerificationRequests {
+    {
+      twitterVerificationRequests(
+        first: 1000
+        orderBy: timestamp
+        orderDirection: desc
+      ) {
         id
         requestId
         result
