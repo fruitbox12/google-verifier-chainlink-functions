@@ -26,6 +26,7 @@ const executeRequest = async (username, address, network) => {
     data: obj,
     billing: response.billing,
     error: response.error,
+    errorMsg: response.errorMsg,
   };
 };
 
