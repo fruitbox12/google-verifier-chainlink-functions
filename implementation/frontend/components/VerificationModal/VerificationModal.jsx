@@ -32,7 +32,11 @@ const VerificationModal = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: formatted, address, encrypted }),
+        body: JSON.stringify({
+          username: formatted,
+          address,
+          encrypted,
+        }),
       });
 
       const data = await res.json();
