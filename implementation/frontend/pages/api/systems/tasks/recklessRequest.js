@@ -9,7 +9,13 @@ const twitterVerifierAbi = require('../abi/TwitterVerifier.json');
 const functionsOracleAbi = require('../abi/FunctionsOracle.json');
 const functionsBillingRegistryAbi = require('../abi/FunctionsBillingRegistry.json');
 
-let returned = { result: false, billing: false, error: false, errorMsg: null };
+let returned = {
+  result: null,
+  billing: null,
+  error: false,
+  errorMsg: null,
+  requestId: null,
+};
 
 module.exports = async (taskArgs, requestConfig, network) => {
   // A manual gas limit is required as the gas limit estimated by Ethers is not always accurate
@@ -257,6 +263,7 @@ module.exports = async (taskArgs, requestConfig, network) => {
       VERIFICATION_BLOCK_CONFIRMATIONS,
     );
     requestId = requestTxReceipt.events[2].args.id;
+    returned.requestId = requestId;
     console.log(`\nRequest ${requestId} initiated`);
     console.log(`Waiting for fulfillment...\n`);
   });
