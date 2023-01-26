@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Input, Modal, Tooltip } from 'antd';
 import { useAccount } from 'wagmi';
+import AfterRequest from './components';
 import { useEncryption, useWidth } from '../../hooks';
 import stores from '../../stores';
 import config from '../../default-config';
@@ -13,10 +14,23 @@ const VerificationModal = () => {
   const width = useWidth();
   const [errorMessage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState('');
-  const [reponseData, setResponseData] = useState({
-    data: {},
-    billing: {},
-    error: false,
+  const [responseData, setResponseData] = useState({
+    // data: {},
+    // billing: {},
+    // error: false,
+    // ? Mock
+    data: {
+      result: 1, // or 0 or -1 if error
+      username: 'wagmi',
+      address: '0x1234567890',
+    },
+    billing: {
+      transmissionCost: 0.0001,
+      baseFee: 0.0001,
+      totalCost: 0.0002,
+    },
+    error: false, // or true if error
+    errorMsg: null, // or 'Something went wrong. Please try again.'
   });
 
   const requestVerification = async () => {
@@ -76,75 +90,79 @@ const VerificationModal = () => {
       width={width > 800 ? 'min(800px, 70%)' : '100%'}
     >
       <div className='verification-modal'>
-        {/* Send tweet */}
-        <div className='section'>
-          <span className='label'>1</span>
-          <span className='instruction'>
-            Send{' '}
-            <Tooltip
-              title={
-                // TODO ADD CLICK TO COPY AND CHANGE ICON
-                config.getTweet(address)
-              }
-            >
-              <a>the verification tweet</a>.
-            </Tooltip>
-          </span>
-          <Button type='primary' onClick={sendTweet}>
-            Send tweet
-          </Button>
-        </div>
-
-        {/* Input username */}
-        <div className='section'>
-          <span className='label'>2</span>
-          <span className='instruction' style={{ gridColumn: 'span 2' }}>
-            Enter your Twitter username.
-          </span>
-          <div className='empty'></div>
-          <Input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            minLength={1}
-            maxLength={15}
-            style={{
-              gridColumn: 'span 2',
-              borderColor:
-                username === ''
-                  ? 'var(--color-blue)'
-                  : checkUsername.isValid()
-                  ? 'var(--color-green)'
-                  : 'var(--color-orange-light)',
-            }}
-            placeholder='Username'
-            // change the border color based on the validity
-            prefix={
-              <span
-                style={{
-                  color: 'var(--color-blue)',
-                  fontWeight: 800,
-                  opacity: 0.7,
-                }}
+        <div className='verification-process'>
+          {/* Send tweet */}
+          <div className='section'>
+            <span className='label'>1</span>
+            <span className='instruction'>
+              Send{' '}
+              <Tooltip
+                title={
+                  // TODO ADD CLICK TO COPY AND CHANGE ICON
+                  config.getTweet(address)
+                }
               >
-                @
-              </span>
-            }
-          />
+                <a>the verification tweet</a>.
+              </Tooltip>
+            </span>
+            <Button type='primary' onClick={sendTweet}>
+              Send tweet
+            </Button>
+          </div>
+
+          {/* Input username */}
+          <div className='section'>
+            <span className='label'>2</span>
+            <span className='instruction' style={{ gridColumn: 'span 2' }}>
+              Enter your Twitter username.
+            </span>
+            <div className='empty'></div>
+            <Input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              minLength={1}
+              maxLength={15}
+              style={{
+                gridColumn: 'span 2',
+                borderColor:
+                  username === ''
+                    ? 'var(--color-blue)'
+                    : checkUsername.isValid()
+                    ? 'var(--color-green)'
+                    : 'var(--color-orange-light)',
+              }}
+              placeholder='Username'
+              // change the border color based on the validity
+              prefix={
+                <span
+                  style={{
+                    color: 'var(--color-blue)',
+                    fontWeight: 800,
+                    opacity: 0.7,
+                  }}
+                >
+                  @
+                </span>
+              }
+            />
+          </div>
+
+          {/* Request verification */}
+          <div className='section'>
+            <span className='label'>3</span>
+            <span className='instruction'>Request the verification.</span>
+            <Button
+              type='primary'
+              onClick={requestVerification}
+              disabled={!checkUsername.isValid()}
+              loading={isRequesting}
+            >
+              Request verification
+            </Button>
+          </div>
         </div>
 
-        {/* Request verification */}
-        <div className='section'>
-          <span className='label'>3</span>
-          <span className='instruction'>Request the verification.</span>
-          <Button
-            type='primary'
-            onClick={requestVerification}
-            disabled={!checkUsername.isValid()}
-            loading={isRequesting}
-          >
-            Request verification
-          </Button>
-        </div>
+        <AfterRequest response={responseData} isRequesting={isRequesting} />
       </div>
     </Modal>
   );
