@@ -18,16 +18,16 @@ const ElapsedTime = ({ timestamp }) => {
     seconds < 60
       ? `${seconds} seconds ago`
       : minutes < 60
-      ? `${minutes} minutes ago`
+      ? `${minutes} minute${minutes > 1 ? 's' : ''} ago`
       : hours < 24
-      ? `${hours} hours ago`
+      ? `${hours} hour${hours > 1 ? 's' : ''} ago`
       : days < 7
-      ? `${days} days ago`
+      ? `${days} day${days > 1 ? 's' : ''} ago`
       : weeks < 4
-      ? `${weeks} weeks ago`
+      ? `${weeks} week${weeks > 1 ? 's' : ''} ago`
       : months < 12
-      ? `${months} months ago`
-      : `${years} years ago`;
+      ? `${months} month${months > 1 ? 's' : ''} ago`
+      : `${years} year${years > 1 ? 's' : ''} ago`;
 
   return <Tooltip title={date.toLocaleString()}>{displayed}</Tooltip>;
 };
