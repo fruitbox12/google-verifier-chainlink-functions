@@ -13,6 +13,8 @@ const TwitterUsername = ({ username }) => {
       href={`https://twitter.com/${username}`}
       target='_blank'
       rel='noopener noreferrer'
+      // style no line break
+      style={{ whiteSpace: 'nowrap' }}
     >
       {displayed}
     </a>
