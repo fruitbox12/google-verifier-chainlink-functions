@@ -9,11 +9,20 @@ import {
 import CostBreakdown from './CostBreakdown';
 import { TwitterUsername, Address } from '../../Utils';
 
+const errorReplace = {
+  "TypeError: Cannot read properties of undefined (reading 'id')":
+    'Twitter account not found or suspended.',
+};
+
 const AfterRequest = ({ response, isRequesting }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
-    if (isRequesting || response.data || response.error) setIsExpanded(true);
+    if (isRequesting || response.data.result || response.error) {
+      setIsExpanded(true);
+    } else {
+      setIsExpanded(false);
+    }
   }, [isRequesting, response.data, response.error]);
 
   if (!isExpanded) return null;
@@ -49,9 +58,10 @@ const AfterRequest = ({ response, isRequesting }) => {
           <LoadingOutlined />
         </div>
       ) : response.error ? (
-        // TODO Set that to class
         <div className='content' style={{ color: 'var(--color-yellow' }}>
-          {response.errorMsg ?? 'Something went wrong. Please try again.'}
+          {response.errorMsg
+            ? errorReplace[response.errorMsg] ?? response.errorMsg
+            : 'Something went wrong. Please try again.'}
         </div>
       ) : Number(response.data.result) === 1 ? (
         <div className='content'>
@@ -64,12 +74,14 @@ const AfterRequest = ({ response, isRequesting }) => {
         <div className='content'>
           <span>Twitter account</span>{' '}
           <TwitterUsername username={response.data.username} />{' '}
-          <span className='emphasize'>could not be verified</span> for{' '}
+          <b>could not be verified</b> for{' '}
           <Address address={response.data.address} />.
         </div>
       )}
 
-      {response.billing && <CostBreakdown billing={response.billing} />}
+      {response.billing && !isRequesting && !response.error && (
+        <CostBreakdown billing={response.billing} />
+      )}
     </div>
   );
 };
