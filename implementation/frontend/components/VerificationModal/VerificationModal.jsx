@@ -36,21 +36,18 @@ const VerificationModal = () => {
           username: formatted,
           address,
           encrypted,
+          baseUrl: window.location.origin,
         }),
       });
 
       const data = await res.json();
 
-      if (data.data && data.billing) {
-        setResponseData(data);
-      } else {
-        setResponseData({
-          data: {},
-          billing: {},
-          error: true,
-          errorMsg: data.errorMsg ?? null,
-        });
-      }
+      setResponseData({
+        data: data.data ?? {},
+        billing: data.billing ?? {},
+        error: data.error ?? false,
+        errorMsg: data.errorMsg ?? null,
+      });
 
       setIsRequesting(false);
     } catch (e) {
@@ -58,8 +55,9 @@ const VerificationModal = () => {
         data: {},
         billing: {},
         error: true,
-        errorMsg: data.errorMsg ?? null,
+        errorMsg: 'Something went wrong. Please try again.',
       });
+
       setIsRequesting(false);
     }
   };
@@ -81,6 +79,7 @@ const VerificationModal = () => {
       data: {},
       billing: {},
       error: false,
+      errorMsg: null,
     });
   };
 
