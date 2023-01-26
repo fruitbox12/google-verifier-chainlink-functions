@@ -22,14 +22,22 @@
   color: var(--color-orange-light);
 }
 
-/* Modal */
+/* 
+ * Modal 
+ */
+/* Process */
 .verification-modal {
   display: grid;
-  gap: 1rem;
+  gap: 2rem;
   margin-top: 1rem;
 }
 
-.verification-modal .section {
+.verification-process {
+  display: grid;
+  gap: 1rem;
+}
+
+.verification-process .section {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -37,7 +45,7 @@
   row-gap: 0.5rem;
 }
 
-.verification-modal .section .label {
+.verification-process .section .label {
   background: var(--color-blue);
   color: white;
   font-size: 1.3rem;
@@ -50,4 +58,57 @@
   margin-right: 0.5rem;
   padding: 0.5rem;
   border-radius: 50%;
+}
+
+/* After */
+.verification-after {
+  display: grid;
+  gap: 1rem;
+}
+
+/* After -- header */
+.verification-after .header {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.verification-after .header .status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.verification-after .header .status.pending {
+  color: var(--color-blue);
+}
+
+.verification-after .header .status.success {
+  color: var(--color-green);
+}
+
+.verification-after .header .status.failed {
+  color: var(--color-yellow);
+}
+
+.verification-after .header .status.error {
+  color: var(--color-orange-light);
+}
+
+/* After -- content */
+.verification-after .content {
+  font-size: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.verification-after .content span {
+  white-space: nowrap;
+}
+
+.verification-after .content.loading {
+  color: var(--color-blue);
+  font-size: 3rem;
+  justify-self: center;
+  margin: 2rem 0;
+  opacity: 0.5;
 }

@@ -44,3 +44,8 @@ blockquote {
   border-left: 0.25rem solid var(--color-blue);
   padding-left: 1rem;
 }
+
+.emphasize {
+  font-weight: 500;
+  color: var(--color-purple);
+}
