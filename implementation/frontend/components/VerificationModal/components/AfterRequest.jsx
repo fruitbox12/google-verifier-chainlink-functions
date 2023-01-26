@@ -8,9 +8,12 @@ import {
 } from '@ant-design/icons';
 import CostBreakdown from './CostBreakdown';
 import { TwitterUsername, Address } from '../../Utils';
+import { Divider } from 'antd';
 
 const errorReplace = {
   "TypeError: Cannot read properties of undefined (reading 'id')":
+    'Twitter account not found or suspended.',
+  "Cannot read properties of undefined (reading 'id')":
     'Twitter account not found or suspended.',
 };
 
@@ -29,6 +32,7 @@ const AfterRequest = ({ response, isRequesting }) => {
 
   return (
     <div className='verification-after'>
+      <Divider style={{ margin: 0 }} />
       <div className='header'>
         {isRequesting ? (
           <span className='status pending'>
@@ -79,7 +83,7 @@ const AfterRequest = ({ response, isRequesting }) => {
         </div>
       )}
 
-      {response.billing && !isRequesting && !response.error && (
+      {response.billing?.totalCost && !isRequesting && (
         <CostBreakdown billing={response.billing} />
       )}
     </div>
