@@ -97,8 +97,8 @@
 /* After -- content */
 .verification-after .content {
   font-size: 1rem;
-  display: flex;
-  gap: 0.5rem;
+  /* display: flex; */
+  /* gap: 0.5rem; */
 }
 
 .verification-after .content span {
