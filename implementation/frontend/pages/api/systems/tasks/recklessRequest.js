@@ -11,12 +11,6 @@ const functionsBillingRegistryAbi = require('../abi/FunctionsBillingRegistry.jso
 
 let returned = { result: false, billing: false, error: false, errorMsg: null };
 
-const returnError = (msg) => {
-  returned.error = true;
-  returned.errorMsg = msg;
-  return returned;
-};
-
 module.exports = async (taskArgs, requestConfig, network) => {
   // A manual gas limit is required as the gas limit estimated by Ethers is not always accurate
   const overrides = {
@@ -92,36 +86,55 @@ module.exports = async (taskArgs, requestConfig, network) => {
   // Loose the cost estimation here ; it's low enough that
   // it's not worth the effort to get it right in that non-hardhat environment
 
+  // ! This step is extremely important
+  // ! If the listeners are not removed, the listeners will keep listening for events
+  // ! for an indefinite amount of time (until the server is stopped), therefore
+  // ! making a very high amount of requests to the provider
+  const removeAllListeners = () => {
+    oracle.removeAllListeners();
+    clientContract.removeAllListeners();
+    registry.removeAllListeners();
+  };
+  const returnError = (msg) => {
+    returned.error = true;
+    returned.errorMsg = msg;
+    removeAllListeners();
+
+    return returned;
+  };
+
   // Use a promise to wait & listen for the fulfillment event before returning
   return await new Promise(async (resolve, reject) => {
     let requestId;
 
     // Initate the listeners before making the request
     // Listen for fulfillment errors
-    oracle.on('UserCallbackError', async (eventRequestId, msg) => {
+    oracle.once('UserCallbackError', async (eventRequestId, msg) => {
       if (requestId == eventRequestId) {
         console.log('Error in client contract callback function');
         console.log(msg);
 
-        returned.error = true;
-        returned.errorMsg = 'Error in client contract callback function';
-        resolve(returned);
+        // ! kill all listeners
+        return resolve(
+          returnError('Error in client contract callback function'),
+        );
       }
     });
-    oracle.on('UserCallbackRawError', async (eventRequestId, msg) => {
+    oracle.once('UserCallbackRawError', async (eventRequestId, msg) => {
       if (requestId == eventRequestId) {
         console.log('Raw error in client contract callback function');
         console.log(Buffer.from(msg, 'hex').toString());
 
-        returned.error = true;
-        returned.errorMsg = 'Raw error in client contract callback function';
-        resolve(returned);
+        // ! kill all listeners
+        return resolve(
+          returnError('Raw error in client contract callback function'),
+        );
       }
     });
     // Listen for successful fulfillment
     let billingEndEventRecieved = false;
     let ocrResponseEventReceived = false;
-    clientContract.on('OCRResponse', async (eventRequestId, result, err) => {
+    clientContract.once('OCRResponse', async (eventRequestId, result, err) => {
       // Ensure the fulfilled requestId matches the initiated requestId to prevent logging a response for an unrelated requestId
       if (eventRequestId !== requestId) {
         return;
@@ -153,11 +166,16 @@ module.exports = async (taskArgs, requestConfig, network) => {
       }
 
       ocrResponseEventReceived = true;
-      if (billingEndEventRecieved) return resolve(returned);
+
+      if (billingEndEventRecieved) {
+        // ! kill all listeners
+        removeAllListeners();
+        return resolve(returned);
+      }
     });
 
     // Listen for the BillingEnd event, log cost breakdown & resolve
-    registry.on(
+    registry.once(
       'BillingEnd',
       async (
         eventRequestId,
@@ -185,11 +203,11 @@ module.exports = async (taskArgs, requestConfig, network) => {
                 'Ensure the fulfillRequest function in the client contract is correct and the --gaslimit is sufficent.',
             );
 
-            returned.error = true;
-            returned.errorMsg = `Error encountered when calling fulfillRequest in client contract.\n
-              Ensure the fulfillRequest function in the client contract is correct and the --gaslimit is sufficent.`;
-
-            return resolve(returned);
+            // ! kill all listeners
+            return resolve(
+              returnError(`Error encountered when calling fulfillRequest in client contract.\n
+            Ensure the fulfillRequest function in the client contract is correct and the --gaslimit is sufficent.`),
+            );
           }
 
           billingEndEventRecieved = true;
@@ -199,10 +217,15 @@ module.exports = async (taskArgs, requestConfig, network) => {
             totalCost,
           };
 
-          if (ocrResponseEventReceived) return resolve(returned);
+          if (ocrResponseEventReceived) {
+            // ! kill all listeners
+            removeAllListeners();
+            return resolve(returned);
+          }
         }
       },
     );
+
     // Initiate the on-chain request after all listeners are initalized
     console.log(
       `\nRequesting new data for FunctionsConsumer contract ${contractAddr} on network ${network}`,
@@ -218,7 +241,8 @@ module.exports = async (taskArgs, requestConfig, network) => {
 
     // If a response is not received within 5 minutes, the request has failed
     setTimeout(() => {
-      resolve(
+      // ! kill all listeners
+      return resolve(
         returnError(
           'A response not received within 5 minutes of the request being initiated and has been canceled. Your subscription was not charged. Please make a new request.',
         ),
