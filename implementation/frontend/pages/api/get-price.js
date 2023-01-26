@@ -1,5 +1,3 @@
-// API to get price from coinmarketcap
-
 const handler = async (req, res) => {
   const { token } = req.body;
 
