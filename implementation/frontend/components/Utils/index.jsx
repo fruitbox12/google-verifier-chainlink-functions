@@ -1,5 +1,6 @@
 import Address from './Address';
-import TwitterUsername from './TwitterUsername';
 import ElapsedTime from './ElapsedTime';
+import RoundedCurrency from './RoundedCurrency';
+import TwitterUsername from './TwitterUsername';
 
-export { Address, TwitterUsername, ElapsedTime };
+export { Address, RoundedCurrency, ElapsedTime, TwitterUsername };
