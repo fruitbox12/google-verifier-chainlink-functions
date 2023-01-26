@@ -129,11 +129,11 @@ module.exports = async (taskArgs, requestConfig, network) => {
       console.log(`Request ${requestId} fulfilled!`);
 
       if (result !== '0x') {
-        console.log(
-          `Response returned to client contract represented as a hex string: ${result}\n${decoded}`,
-        );
-
         const decodedOutput = Buffer.from(result.slice(2), 'hex').toString();
+
+        console.log(
+          `Response returned to client contract represented as a hex string: ${result}\n${decodedOutput}`,
+        );
 
         returned.result = {
           hex: result,
