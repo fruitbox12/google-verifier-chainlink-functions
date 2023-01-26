@@ -14,19 +14,21 @@ const executeRequest = async (username, address, network) => {
   );
 
   const fields = ['result', 'username', 'address'];
+  let obj = {};
 
-  const obj = response.error
-    ? null
-    : response.result.decoded.split(',').reduce((acc, cur, i) => {
-        acc[fields[i]] = cur;
-        return acc;
-      }, {});
+  if (response.result?.decoded) {
+    obj = response.result.decoded.split(',').reduce((acc, cur, i) => {
+      acc[fields[i]] = cur;
+      return acc;
+    }, {});
+  }
 
   return {
     data: obj,
     billing: response.billing,
     error: response.error,
     errorMsg: response.errorMsg,
+    requestId: response.requestId,
   };
 };
 
