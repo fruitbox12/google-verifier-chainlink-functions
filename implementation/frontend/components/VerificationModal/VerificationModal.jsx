@@ -12,25 +12,11 @@ const VerificationModal = () => {
   const { encrypt } = useEncryption();
   const { address } = useAccount();
   const width = useWidth();
-  const [errorMessage, setErrorMessage] = useState(null);
   const [username, setUsername] = useState('');
   const [responseData, setResponseData] = useState({
-    // data: {},
-    // billing: {},
-    // error: false,
-    // ? Mock
-    data: {
-      result: 1, // or 0 or -1 if error
-      username: 'wagmi',
-      address: '0x1234567890',
-    },
-    billing: {
-      transmissionCost: 0.0001,
-      baseFee: 0.0001,
-      totalCost: 0.0002,
-    },
-    error: false, // or true if error
-    errorMsg: null, // or 'Something went wrong. Please try again.'
+    data: {},
+    billing: {},
+    error: false,
   });
 
   const requestVerification = async () => {
@@ -54,19 +40,26 @@ const VerificationModal = () => {
       });
 
       const data = await res.json();
-      console.log(data);
 
       if (data.data && data.billing) {
         setResponseData(data);
       } else {
-        setErrorMessage('Something went wrong. Please try again.');
-        setResponseData({ data: {}, billing: {}, error: true });
+        setResponseData({
+          data: {},
+          billing: {},
+          error: true,
+          errorMsg: data.errorMsg ?? null,
+        });
       }
 
       setIsRequesting(false);
     } catch (e) {
-      setErrorMessage('Something went wrong. Please try again.');
-      setResponseData({ data: {}, billing: {}, error: true });
+      setResponseData({
+        data: {},
+        billing: {},
+        error: true,
+        errorMsg: data.errorMsg ?? null,
+      });
       setIsRequesting(false);
     }
   };
@@ -81,11 +74,21 @@ const VerificationModal = () => {
     window.open(`https://twitter.com/intent/tweet?text=${tweet}`, '_blank');
   };
 
+  const onClose = () => {
+    setIsModalOpen(false);
+    setUsername('');
+    setResponseData({
+      data: {},
+      billing: {},
+      error: false,
+    });
+  };
+
   return (
     <Modal
       title='Verify your Twitter account'
       open={isModalOpen}
-      onCancel={() => setIsModalOpen(false)}
+      onCancel={onClose}
       footer={null}
       width={width > 800 ? 'min(800px, 70%)' : '100%'}
     >
@@ -157,7 +160,9 @@ const VerificationModal = () => {
               disabled={!checkUsername.isValid()}
               loading={isRequesting}
             >
-              Request verification
+              {isRequesting
+                ? 'Requesting verification'
+                : 'Request verification'}
             </Button>
           </div>
         </div>
