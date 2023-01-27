@@ -2,10 +2,23 @@
 
 1. The EOA should be whitelisted to deploy a full oracle.
 
-2. Create and deploy the FunctionsClient compatible contract (see example in /lib/contracts/FunctionsClient.sol) ; it should be deployed with the Functions Oracle address as a constructor argument (see lib/network-config.js).
+2. Create and deploy the FunctionsClient compatible contract (see example in `/lib/contracts/FunctionsClient.sol`) ; it should be deployed with the Functions Oracle address as a constructor argument (see lib/network-config.js).
 
-3. Get the contract addresses from the output ()
-   0x0D0bB690F09a6c5D25C5365Dd8f0a84dBd97B937
+3. Get the contract addresses from the output, and update it in `./helper-hardhat-config.js`.
+
+4. Run `scripts/setup-client.js`, after updating the `FUNDING_AMOUNT`.
+
+5. Get the subscription ID from the output, and update it in `./helper-hardhat-config.js`.
+
+6. Run `scripts/execute-request.js`, after putting an example `TWITTER_USERNAME` and `ETHEREUM_ADDRESS` in `./helper-hardhat-config.js`.
+
+Example:
+
+```bash
+$ yarn hardhat run scripts/execute-request.js --network mumbai
+```
+
+---
 
 # To check after pull
 

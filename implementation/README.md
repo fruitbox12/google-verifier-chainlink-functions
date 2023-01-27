@@ -1,4 +1,13 @@
-- The user connect with their wallet address
-- When opening the 'Verify your account' modal, they are prompted to sign a message to verify their address 'isSigned = true' in 'useVerification'
-- The app makes an API call with that address and the input username
-  - Access to the API is restricted to the app through a secret AES 256 key (so the address is indeed the user's)
+# Monorepo
+
+### frontend
+
+Everything related to the frontend of the application, with Next.js.
+
+### graph-mumbai
+
+The code for the subgraph on Mumbai.
+
+### twitter-verification
+
+Everything working in a hardhat environment, later ported and adapted to the frontend.
