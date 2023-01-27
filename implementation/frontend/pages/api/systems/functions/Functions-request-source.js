@@ -86,6 +86,6 @@ try {
 // If something went wrong, yet no error was thrown, result will return -1
 
 // We can't return a stringified object because of the length limit
-return Functions.encodeString(
-  `${result},${twitterUsername},${ethereumAddress}`,
-);
+// ! We need to remove the 'return' here, and put it again in ./Functions-request-config.js
+// ! Otherwise the Vercel deployment will fail
+Functions.encodeString(`${result},${twitterUsername},${ethereumAddress}`);

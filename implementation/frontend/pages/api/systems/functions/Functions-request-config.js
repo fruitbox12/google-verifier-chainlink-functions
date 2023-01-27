@@ -34,7 +34,10 @@ const requestConfig = (username, address) => {
     // ! -- OVERRIDEN BY THE IMPLEMENTATION --
     source: fs
       .readFileSync('./pages/api/systems/functions/Functions-request-source.js')
-      .toString(),
+      .toString()
+      // ! Replace 'Functions.encodeString' with 'return Functions.encodeString'
+      // ! it can't be done in the source file because of Vercel deployment
+      .replace('Functions.encodeString', 'return Functions.encodeString'),
     //source: fs.readFileSync('./Functions-request-source-API-example.js').toString(),
     // number of HTTP queries the source code is allowed to make
     numAllowedQueries: 4,
