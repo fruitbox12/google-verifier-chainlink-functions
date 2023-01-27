@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Input, Modal, Tooltip } from 'antd';
+import { Button, Input, Modal, notification, Tooltip } from 'antd';
 import { useAccount } from 'wagmi';
 import AfterRequest from './components';
 import { useEncryption, useWidth } from '../../hooks';
@@ -12,6 +12,7 @@ const VerificationModal = () => {
   const { encrypt } = useEncryption();
   const { address } = useAccount();
   const width = useWidth();
+  const [api, contextHolder] = notification.useNotification();
   const [username, setUsername] = useState('');
   const [responseData, setResponseData] = useState({
     data: {},
@@ -72,6 +73,19 @@ const VerificationModal = () => {
     window.open(`https://twitter.com/intent/tweet?text=${tweet}`, '_blank');
   };
 
+  const copyTweet = () => {
+    const tweet = config.getTweet(address);
+    navigator.clipboard.writeText(tweet);
+    api.success({
+      message: 'Copied to clipboard',
+      description: (
+        <span style={{ fontStyle: 'italic', opacity: 0.7 }}>{tweet}</span>
+      ),
+      placement: 'topRight',
+      duration: 3,
+    });
+  };
+
   const onClose = () => {
     setIsModalOpen(false);
     setUsername('');
@@ -92,6 +106,7 @@ const VerificationModal = () => {
       width={width > 800 ? 'min(800px, 70%)' : '100%'}
     >
       <div className='verification-modal'>
+        {contextHolder}
         <div className='verification-process'>
           {/* Send tweet */}
           <div className='section'>
@@ -104,7 +119,11 @@ const VerificationModal = () => {
                   config.getTweet(address)
                 }
               >
-                <a>the verification tweet</a>.
+                <a onClick={copyTweet}>the verification tweet</a>{' '}
+                <span style={{ opacity: 0.7 }}>
+                  (You can delete it afterward)
+                </span>
+                .
               </Tooltip>
             </span>
             <Button type='primary' onClick={sendTweet}>
