@@ -62,6 +62,24 @@ module.exports = async (taskArgs, requestConfig, network) => {
     signer,
   );
 
+  // ! This step is extremely important
+  // ! If the listeners are not removed, the listeners will keep listening for events
+  // ! for an indefinite amount of time (until the server is stopped), therefore
+  // ! making a very high amount of requests to the provider
+  const removeAllListeners = () => {
+    oracle.removeAllListeners();
+    clientContract.removeAllListeners();
+    registry.removeAllListeners();
+  };
+
+  const returnError = (msg) => {
+    returned.error = true;
+    returned.errorMsg = msg;
+    removeAllListeners();
+
+    return returned;
+  };
+
   // Check that the subscription is valid
   let subInfo;
   try {
@@ -91,23 +109,6 @@ module.exports = async (taskArgs, requestConfig, network) => {
 
   // Loose the cost estimation here ; it's low enough that
   // it's not worth the effort to get it right in that non-hardhat environment
-
-  // ! This step is extremely important
-  // ! If the listeners are not removed, the listeners will keep listening for events
-  // ! for an indefinite amount of time (until the server is stopped), therefore
-  // ! making a very high amount of requests to the provider
-  const removeAllListeners = () => {
-    oracle.removeAllListeners();
-    clientContract.removeAllListeners();
-    registry.removeAllListeners();
-  };
-  const returnError = (msg) => {
-    returned.error = true;
-    returned.errorMsg = msg;
-    removeAllListeners();
-
-    return returned;
-  };
 
   // Use a promise to wait & listen for the fulfillment event before returning
   return await new Promise(async (resolve, reject) => {
@@ -247,12 +248,14 @@ module.exports = async (taskArgs, requestConfig, network) => {
 
     // If a response is not received within 5 minutes, the request has failed
     setTimeout(() => {
+      // Don't just return an error, maybe one of the listeners
+      // catched the response but not the other one
+      returned.error = true;
+      returned.errorMsg =
+        'A response not received within 5 minutes of the request being initiated and has been canceled. Your subscription was not charged. Please make a new request.';
       // ! kill all listeners
-      return resolve(
-        returnError(
-          'A response not received within 5 minutes of the request being initiated and has been canceled. Your subscription was not charged. Please make a new request.',
-        ),
-      );
+      removeAllListeners();
+      return resolve(returned);
     }, 300_000);
 
     console.log(
