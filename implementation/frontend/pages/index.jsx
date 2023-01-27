@@ -35,6 +35,7 @@ const Home = () => {
                 : 'You need to connect your wallet to verify your account'
             }
             placement='bottom'
+            className='verify-button'
           >
             <Button
               type='primary'

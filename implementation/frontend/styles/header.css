@@ -3,7 +3,7 @@ header {
   grid-template-columns: 1fr auto;
   align-items: center;
   justify-items: flex-start;
-  padding: 1rem 2rem;
+  padding: 1rem;
   /* light bottom border */
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -15,6 +15,11 @@ header .title {
   letter-spacing: 0.1em;
   margin: 0;
   padding: 0;
-  text-align: center;
   text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  header {
+    padding: 1rem 2rem;
+  }
 }
