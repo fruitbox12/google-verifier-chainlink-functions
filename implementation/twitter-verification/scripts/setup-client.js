@@ -1,7 +1,7 @@
 const { TWITTER_VERIFIER } = require('../helper-hardhat-config');
 const create = require('../tasks/create');
 
-const FUNDING_AMOUNT = '0.1'; // 0.1 LINK
+const FUNDING_AMOUNT = '1'; // 1.0 LINK
 
 const setupClient = async () => {
   await create({
