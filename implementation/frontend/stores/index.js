@@ -1,10 +1,12 @@
 import useApolloClient from './useApolloClient';
-import useData from './useData';
+import useGraphData from './useGraphData';
+import useSpreadsheetData from './useSpreadsheetData';
 import useVerification from './useVerification';
 
 const stores = {
   useApolloClient,
-  useData,
+  useGraphData,
+  useSpreadsheetData,
   useVerification,
 };
 
