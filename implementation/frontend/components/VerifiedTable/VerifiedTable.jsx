@@ -1,12 +1,26 @@
-import { Table } from 'antd';
+import { Divider, Table, Tooltip } from 'antd';
 import { useEffect } from 'react';
-import { Address, ElapsedTime, TwitterUsername } from '../Utils';
-import { useSearch } from '../../hooks';
+import {
+  Address,
+  ElapsedTime,
+  RoundedCurrency,
+  TwitterUsername,
+} from '../Utils';
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import { useCMK, useSearch } from '../../hooks';
 import stores from '../../stores';
 
 const VerifiedTable = () => {
-  const { data, loaded, setData } = stores.useData();
+  const {
+    data: graphData,
+    loaded,
+    setData: setGraphData,
+  } = stores.useGraphData();
+  const { data: spreadsheetData, setData: setSpreadsheetData } =
+    stores.useSpreadsheetData();
+  const { replaceError } = stores.useVerification();
   const { getColumnSearchProps } = useSearch();
+  const { priceInDollar } = useCMK('LINK');
 
   const columns = [
     {
@@ -22,22 +36,63 @@ const VerifiedTable = () => {
       dataIndex: 'address',
       key: 'address',
       ...getColumnSearchProps('address'),
-      render: (address) => <Address address={address} />,
+      render: (address, record) => {
+        // Get the address from the spreadsheet if was not included in the request return
+        // e.g. if error
+        if (
+          !address &&
+          spreadsheetData &&
+          spreadsheetData[record.requestId]?.address
+        )
+          address = spreadsheetData[record.requestId].address;
+
+        if (address) return <Address address={address} />;
+        return <Divider style={{ margin: 0 }} />;
+      },
     },
     {
       title: 'Twitter username',
       dataIndex: 'username',
       key: 'username',
       ...getColumnSearchProps('username'),
-      render: (username) => <TwitterUsername username={username} />,
+      render: (username, record) => {
+        // Same for username
+        if (
+          !username &&
+          spreadsheetData &&
+          spreadsheetData[record.requestId]?.username
+        )
+          username = spreadsheetData[record.requestId].username;
+
+        if (username) return <TwitterUsername username={username} />;
+        return <Divider style={{ margin: 0 }} />;
+      },
     },
     {
       title: 'Verification',
       dataIndex: 'result',
       key: 'result',
-      render: (result) => {
+      render: (result, record) => {
         if (Number(result) === -1) {
-          return <span className='status error'>Error</span>;
+          return (
+            <span
+              className='status error'
+              style={{ display: 'flex', alignContent: 'center', gap: '0.5rem' }}
+            >
+              Error
+              {spreadsheetData && spreadsheetData[record.requestId] && (
+                <Tooltip
+                  title={
+                    replaceError[spreadsheetData[record.requestId].errorMsg] ||
+                    spreadsheetData[record.requestId].errorMsg ||
+                    'Unknown error'
+                  }
+                >
+                  <QuestionCircleOutlined style={{ cursor: 'pointer' }} />
+                </Tooltip>
+              )}
+            </span>
+          );
         } else if (Number(result) === 0) {
           return <span className='status failed'>Failed</span>;
         } else if (Number(result) === 1) {
@@ -51,13 +106,45 @@ const VerifiedTable = () => {
       ],
       onFilter: (value, record) => Number(record.result) === value,
     },
+    {
+      title: 'Cost',
+      dataIndex: 'cost',
+      key: 'cost',
+      render: (_, record) => {
+        if (!spreadsheetData || !spreadsheetData[record.requestId])
+          return <Divider style={{ margin: 0 }} />;
+        return (
+          <span>
+            <RoundedCurrency
+              value={spreadsheetData[record.requestId]?.totalCost}
+              currency='LINK'
+            />{' '}
+            {priceInDollar && (
+              <span style={{ fontSize: '1rem' }}>
+                <Divider type='vertical' />
+                <span style={{ color: 'var(--color-blue)' }}>
+                  <RoundedCurrency
+                    value={
+                      Number(spreadsheetData[record.requestId]?.totalCost) *
+                      Number(priceInDollar)
+                    }
+                    currency='$'
+                  />
+                </span>
+              </span>
+            )}
+          </span>
+        );
+      },
+    },
   ];
 
   useEffect(() => {
-    setData();
+    setGraphData();
+    setSpreadsheetData();
   }, []);
 
-  if (!loaded || !data) {
+  if (!loaded || !graphData) {
     return 'loading';
   }
 
@@ -69,8 +156,8 @@ const VerifiedTable = () => {
       </span>
       <Table
         columns={columns}
-        dataSource={data.map((entry) => entry.data)}
-        rowKey={(entry) => entry.timestamp}
+        dataSource={graphData.map((entry) => entry.data)}
+        rowKey={(entry) => entry.requestId}
       />
     </div>
   );
