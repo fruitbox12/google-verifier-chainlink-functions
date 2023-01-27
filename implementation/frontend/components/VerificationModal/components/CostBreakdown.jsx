@@ -37,9 +37,7 @@ const CostBreakdown = ({ billing }) => {
         {priceInDollar && (
           <span style={{ fontSize: '1rem' }}>
             <Divider type='vertical' />
-            <span
-              style={{ /* fontSize: '1rem',  */ color: 'var(--color-blue)' }}
-            >
+            <span style={{ color: 'var(--color-blue)' }}>
               <RoundedCurrency
                 value={Number(billing.totalCost) * Number(priceInDollar)}
                 currency='$'
