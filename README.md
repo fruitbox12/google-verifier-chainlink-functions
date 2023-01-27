@@ -1,5 +1,8 @@
-# chainlink-hardhat-functions-implementation
+# Twitter Verifier
 
-Just an implementation of a Twitter account verification tool, using an Ethereum address. This is part of a project that was initially created during the Chainlink Fall 2022 Hackathon, using Chainlink Nodes, External Adapters and Any API. It is here adapted to use the new Chainlink Functions instead of Any API.
+Just an implementation of a Twitter account verification tool, using an Ethereum address. It operates with Chainlink Functions, the next version of Any API & Direct Request. Everything related to the frontend & graph is deployed on Mumbai.
 
-For a step-by-step guide visit /implementation/twitter-verification/README.md
+For easily testing, just go to `implementation/twitter-verification`, and follow the instructions on the README.md file.
+
+Original repo
+https://github.com/smartcontractkit/functions-hardhat-starter-kit

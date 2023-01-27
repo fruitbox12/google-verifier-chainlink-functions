@@ -1,21 +1,46 @@
-# Step-by-step Guide (easy mode)
+# Step-by-step guide for testing (on a testnet)
 
-1. The EOA should be whitelisted to deploy a full oracle.
+Right now (2023-01-27), your EOA should be whitelisted to interact with the Functions Oracle.
 
-2. Create and deploy the FunctionsClient compatible contract (see example in `/lib/contracts/FunctionsClient.sol`) ; it should be deployed with the Functions Oracle address as a constructor argument (see lib/network-config.js).
-
-3. Get the contract addresses from the output, and update it in `./helper-hardhat-config.js`.
-
-4. Run `scripts/setup-client.js`, after updating the `FUNDING_AMOUNT`.
-
-5. Get the subscription ID from the output, and update it in `./helper-hardhat-config.js`.
-
-6. Run `scripts/execute-request.js`, after putting an example `TWITTER_USERNAME` and `ETHEREUM_ADDRESS` in `./helper-hardhat-config.js`.
-
-Example:
+1. Clone this repo
 
 ```bash
-$ yarn hardhat run scripts/execute-request.js --network mumbai
+$ git clone git@github.com:polar0/twitter-verifier-chainlink-functions.git
+```
+
+2. Install dependencies
+
+```bash
+$ cd implementation/twitter-verification
+$ yarn
+```
+
+3. Set the environment variables
+
+```bash
+$ cp .env.example .env
+```
+
+4. Deploy the client contract
+
+```bash
+$ yarn hardhat deploy --network network_name
+```
+
+5. Get the contract address from the output, and update it in `./helper-hardhat-config.js`.
+
+6. Update the `FUNDING_AMOUNT` in `scripts/setup-client.js`, then create, fund and authorize the Functions billing subscription
+
+```bash
+$ yarn hardhat run scripts/setup-client.js --network network_name
+```
+
+7. Get the subscription ID from the output, and update it in `./helper-hardhat-config.js`.
+
+8. Update the `TWITTER_USERNAME` and `ETHEREUM_ADDRESS` in `./helper-hardhat-config.js`. Then, create the request
+
+```bash
+$ yarn hardhat run scripts/execute-request.js --network network_name
 ```
 
 ---
