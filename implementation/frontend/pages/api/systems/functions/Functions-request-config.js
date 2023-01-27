@@ -31,13 +31,12 @@ const requestConfig = (username, address) => {
     // code language (only JavaScript is currently supported)
     codeLanguage: CodeLanguage.JavaScript,
     // string containing the source code to be executed
-    // ! -- OVERRIDEN BY THE IMPLEMENTATION --
+    // No need for fs.readFileSync() here
     source: functionsRequestSource,
     //source: fs.readFileSync('./Functions-request-source-API-example.js').toString(),
     // number of HTTP queries the source code is allowed to make
     numAllowedQueries: 4,
     // secrets can be accessed within the source code with `secrets.varName` (ie: secrets.apiKey)
-    // ! -- OVERRIDEN BY THE IMPLEMENTATION --
     secrets: { apiKey: process.env.NEXT_PUBLIC_TWITTER_BEARER_TOKEN },
     // ETH wallet key used to sign secrets so they cannot be accessed by a 3rd party
     walletPrivateKey: process.env['NEXT_PUBLIC_PRIVATE_KEY'],
@@ -45,9 +44,8 @@ const requestConfig = (username, address) => {
     DONPublicKey:
       'f2f9c47363202d89aa9fa70baf783d70006fe493471ac8cfa82f1426fd09f16a5f6b32b7c4b5d5165cd147a6e513ba4c0efd39d969d6b20a8a21126f0411b9c6',
     // args (string only array) can be accessed within the source code with `args[index]` (ie: args[0]).
-    // ! -- OVERRIDEN BY THE IMPLEMENTATION --
-    // ! @param {string} twitterHandle - The twitter handle to be verified
-    // ! @param {string} ethereumAddress - The ethereum address to be verified
+    //  @param {string} twitterHandle - The twitter handle to be verified
+    //  @param {string} ethereumAddress - The ethereum address to be verified
     args: [username, address],
     // maximum size of a response in bytes
     maxResponseBytes: 256,

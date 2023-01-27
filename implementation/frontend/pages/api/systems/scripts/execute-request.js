@@ -5,10 +5,7 @@ const request = require('../tasks/recklessRequest');
 const executeRequest = async (username, address, network) => {
   const config = requestConfig(username, address);
   const response = await request(
-    {
-      contract: TWITTER_VERIFIER,
-      subid: SUB_ID,
-    },
+    { contract: TWITTER_VERIFIER, subid: SUB_ID },
     config,
     network,
   );
