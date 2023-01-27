@@ -1,4 +1,4 @@
-const fs = require('fs');
+const functionsRequestSource = require('./Functions-request-source');
 
 // Loads environment variables from .env file (if it exists)
 require('dotenv').config();
@@ -32,12 +32,7 @@ const requestConfig = (username, address) => {
     codeLanguage: CodeLanguage.JavaScript,
     // string containing the source code to be executed
     // ! -- OVERRIDEN BY THE IMPLEMENTATION --
-    source: fs
-      .readFileSync('./pages/api/systems/functions/Functions-request-source.js')
-      .toString()
-      // ! Replace 'Functions.encodeString' with 'return Functions.encodeString'
-      // ! it can't be done in the source file because of Vercel deployment
-      .replace('Functions.encodeString', 'return Functions.encodeString'),
+    source: functionsRequestSource,
     //source: fs.readFileSync('./Functions-request-source-API-example.js').toString(),
     // number of HTTP queries the source code is allowed to make
     numAllowedQueries: 4,
