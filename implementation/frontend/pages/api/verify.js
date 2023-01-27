@@ -42,6 +42,8 @@ const updateSpreadsheetCost = async (result, baseUrl) => {
         body: JSON.stringify({
           ...result.billing,
           requestId: result.requestId,
+          username: result.data?.username,
+          address: result.data?.address,
           errorMsg: result.errorMsg,
         }),
       },
