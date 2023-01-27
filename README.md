@@ -4,5 +4,5 @@ Just an implementation of a Twitter account verification tool, using an Ethereum
 
 For easily testing, just go to `implementation/twitter-verification`, and follow the instructions on the README.md file.
 
-Original repo
+Chainlink Functions Starter Kit:
 https://github.com/smartcontractkit/functions-hardhat-starter-kit
