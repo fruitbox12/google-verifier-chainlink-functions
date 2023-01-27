@@ -86,11 +86,12 @@ const functionsRequestSource = /* javascript */ `
   // Return 1 (verified) or 0 (not verified) + username + address
   // If something went wrong, yet no error was thrown, result will return -1
 
-  // We can't return a stringified object because of the length limit
-  // ! We need to remove the 'return' here, and put it again in ./Functions-request-config.js
-  // ! Otherwise the Vercel deployment will fail
   return Functions.encodeString(
-    result + ',' + twitterUsername + ',' + ethereumAddress,
+    JSON.stringify({
+      result,
+      username: twitterUsername,
+      address: ethereumAddress,
+    }),
   );
   `;
 
