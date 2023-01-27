@@ -1,6 +1,6 @@
 import { Divider, Table, Tooltip } from 'antd';
 import { useEffect } from 'react';
-import { RoundedCurrency } from '../Utils';
+import { RoundedCurrency, SkeletonTable } from '../Utils';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useCMK } from '../../hooks';
 import stores from '../../stores';
@@ -39,15 +39,13 @@ const TotalTable = () => {
     setData();
   }, []);
 
-  if (!data) {
-    return 'loading';
-  }
+  if (!data) return <SkeletonTable columns={columns} rows={1} />;
 
   return (
     <div className='total-table'>
       <Table
         columns={columns}
-        dataSource={[data]}
+        dataSource={data ? [data] : []}
         rowKey='totalRequests'
         pagination={false}
       />

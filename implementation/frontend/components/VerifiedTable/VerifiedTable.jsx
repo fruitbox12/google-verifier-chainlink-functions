@@ -4,6 +4,7 @@ import {
   Address,
   ElapsedTime,
   RoundedCurrency,
+  SkeletonTable,
   TwitterUsername,
 } from '../Utils';
 import { QuestionCircleOutlined } from '@ant-design/icons';
@@ -145,7 +146,7 @@ const VerifiedTable = () => {
   }, []);
 
   if (!loaded || !graphData) {
-    return 'loading';
+    return <SkeletonTable columns={columns} rows={5} />;
   }
 
   return (
