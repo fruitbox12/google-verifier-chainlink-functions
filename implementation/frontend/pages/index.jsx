@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import VerifiedTable from '../components/VerifiedTable';
 import VerificationModal from '../components/VerificationModal';
 import stores from '../stores';
+import TotalTable from '../components/TotalTable';
 
 const Home = () => {
   const { isConnected } = useAccount();
@@ -23,6 +24,7 @@ const Home = () => {
   return (
     <div className='container'>
       <Header />
+      <TotalTable />
       <main>
         <div className='header'>
           <h1 className='title'>Last verification requests</h1>
