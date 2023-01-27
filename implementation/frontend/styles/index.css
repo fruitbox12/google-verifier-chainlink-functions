@@ -3,6 +3,7 @@
 @import './header.css';
 @import './main.css';
 @import './verification.css';
+@import './total.css';
 
 /* Fonts */
 @import './fonts/futura//stylesheet.css';
