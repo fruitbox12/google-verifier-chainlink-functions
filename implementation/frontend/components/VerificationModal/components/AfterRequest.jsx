@@ -9,16 +9,11 @@ import {
 import CostBreakdown from './CostBreakdown';
 import { TwitterUsername, Address } from '../../Utils';
 import { Divider } from 'antd';
-
-const errorReplace = {
-  "TypeError: Cannot read properties of undefined (reading 'id')":
-    'Twitter account not found or suspended.',
-  "Cannot read properties of undefined (reading 'id')":
-    'Twitter account not found or suspended.',
-};
+import stores from '../../../stores';
 
 const AfterRequest = ({ response, isRequesting }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { replaceError } = stores.useVerification();
 
   useEffect(() => {
     if (isRequesting || response.data.result || response.error) {
@@ -64,7 +59,7 @@ const AfterRequest = ({ response, isRequesting }) => {
       ) : response.error ? (
         <div className='content' style={{ color: 'var(--color-yellow' }}>
           {response.errorMsg
-            ? errorReplace[response.errorMsg] ?? response.errorMsg
+            ? replaceError[response.errorMsg] ?? response.errorMsg
             : 'Something went wrong. Please try again.'}
         </div>
       ) : Number(response.data.result) === 1 ? (
