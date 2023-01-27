@@ -10,15 +10,9 @@ const executeRequest = async (username, address, network) => {
     network,
   );
 
-  const fields = ['result', 'username', 'address'];
-  let obj = {};
-
-  if (response.result?.decoded) {
-    obj = response.result.decoded.split(',').reduce((acc, cur, i) => {
-      acc[fields[i]] = cur;
-      return acc;
-    }, {});
-  }
+  const obj = response.result?.decoded
+    ? JSON.parse(response.result.decoded)
+    : {};
 
   return {
     data: obj,

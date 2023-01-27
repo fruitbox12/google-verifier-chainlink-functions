@@ -45,12 +45,7 @@ export default create((set, get) => ({
           'hex',
         ).toString();
 
-        // Create an object with the fields
-        const fields = ['result', 'username', 'address'];
-        const objResult = decodedResult.split(',').reduce((acc, cur, i) => {
-          acc[fields[i]] = cur;
-          return acc;
-        }, {});
+        const objResult = JSON.parse(decodedResult);
 
         data = objResult;
       } catch (e) {
