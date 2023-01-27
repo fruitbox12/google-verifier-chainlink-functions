@@ -6,9 +6,9 @@ dataSources:
     name: TwitterVerifier
     network: mumbai
     source:
-      address: '0xdb4c4c35E9B59a48E9931476753f5A183cD7280d'
+      address: '0xD4168950d1529265A6c96311Ec8a622CdBD2610B'
       abi: TwitterVerifier
-      startBlock: 31354356
+      startBlock: 31463640
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
