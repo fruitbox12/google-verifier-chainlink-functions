@@ -10,11 +10,9 @@ const handler = async (req, res) => {
 };
 
 const getSpreadsheetData = async () => {
-  // Get columns A to D, from row 2 to the end
-  // Column 0: requestId, column 1: transmissionCost, column 2: baseFee, column 3: totalCost, column 4: errorMsg
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SHEET_ID,
-    range: 'A2:E',
+    range: 'A2:G',
   });
   const rows = res.data.values;
 
@@ -25,7 +23,9 @@ const getSpreadsheetData = async () => {
         transmissionCost: row[1],
         baseFee: row[2],
         totalCost: row[3],
-        errorMsg: row[4] ?? null,
+        username: row[4] ?? null,
+        address: row[5] ?? null,
+        errorMsg: row[6] ?? null,
       };
     });
   } else {
