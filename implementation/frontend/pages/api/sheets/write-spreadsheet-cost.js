@@ -12,7 +12,7 @@ const handler = async (req, res) => {
 const writeSpreadsheetData = async (data) => {
   const res = await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
-    range: 'A2:E',
+    range: 'A:G',
     valueInputOption: 'USER_ENTERED',
     insertDataOption: 'INSERT_ROWS',
     resource: {
@@ -22,6 +22,8 @@ const writeSpreadsheetData = async (data) => {
           data.transmissionCost,
           data.baseFee,
           data.totalCost,
+          data.username,
+          data.address,
           data.errorMsg ? data.errorMsg : '',
         ],
       ],
