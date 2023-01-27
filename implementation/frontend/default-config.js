@@ -15,7 +15,7 @@ const config = {
       }
     }
   `,
-  getTweet: (address) => `Verifying my account for ${address}`,
+  getTweet: (address) => `Verifying my Twitter account for ${address}`,
 };
 
 export default config;
