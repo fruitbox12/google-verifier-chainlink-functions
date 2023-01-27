@@ -27,7 +27,6 @@ const handler = async (req, res) => {
 };
 
 const updateSpreadsheetCost = async (result, baseUrl) => {
-  console.log(result);
   if (!result) return false;
   if (!result.billing) return false;
 
