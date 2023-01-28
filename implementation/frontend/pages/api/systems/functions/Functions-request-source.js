@@ -1,4 +1,4 @@
-const functionsRequestSource = /* javascript */ `
+/**
   const twitterUsername = args[0];
   const ethereumAddress = args[1];
   const requiredStringIncluded = 'Verifying my Twitter account for ' + ethereumAddress;
@@ -93,6 +93,4 @@ const functionsRequestSource = /* javascript */ `
       address: ethereumAddress,
     }),
   );
-  `;
-
-module.exports = functionsRequestSource;
+**/
