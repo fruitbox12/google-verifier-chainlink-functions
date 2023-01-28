@@ -7,7 +7,7 @@ const RoundedCurrency = ({ value, currency }) => {
     if (Number(value) >= 1) {
       return Number(Number(value).toFixed(2));
     }
-    console.log(value);
+
     const trailingZeros = value.toString().split('.')[1].match(/0+/)[0].length;
     return Number(Number(value).toFixed(trailingZeros + 3));
   };
