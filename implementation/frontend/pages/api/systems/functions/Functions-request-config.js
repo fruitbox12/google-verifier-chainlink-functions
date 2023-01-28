@@ -1,4 +1,5 @@
-const functionsRequestSource = require('./Functions-request-source');
+// const functionsRequestSource = require('./Functions-request-source');
+const fs = require('fs');
 
 // Loads environment variables from .env file (if it exists)
 require('dotenv').config();
@@ -31,9 +32,12 @@ const requestConfig = (username, address) => {
     // code language (only JavaScript is currently supported)
     codeLanguage: CodeLanguage.JavaScript,
     // string containing the source code to be executed
-    // No need for fs.readFileSync() here
-    source: functionsRequestSource,
-    //source: fs.readFileSync('./Functions-request-source-API-example.js').toString(),
+    // source: functionsRequestSource,
+    source: fs
+      .readFileSync('./pages/api/systems/functions/Functions-request-source.js')
+      .toString()
+      .replace('/**', '')
+      .replace('**/', ''),
     // number of HTTP queries the source code is allowed to make
     numAllowedQueries: 4,
     // secrets can be accessed within the source code with `secrets.varName` (ie: secrets.apiKey)
