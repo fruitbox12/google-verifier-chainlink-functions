@@ -15,6 +15,7 @@ const handler = async (req, res) => {
     }
 
     const result = await executeRequest(username, address, 'mumbai');
+    console.log(result);
 
     // Update the spreadsheet with the new data
     const updateSuccess = await updateSpreadsheetCost(result, baseUrl);
@@ -48,7 +49,6 @@ const updateSpreadsheetCost = async (result, baseUrl) => {
       },
     );
     const data = await response.json();
-    console.log(data);
 
     const success = data.data.updates.updatedRows === 1;
     if (!success) {
