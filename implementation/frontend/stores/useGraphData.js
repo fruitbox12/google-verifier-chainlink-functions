@@ -45,18 +45,15 @@ export default create((set, get) => ({
           'hex',
         ).toString();
 
-        const objResult = JSON.parse(decodedResult);
+        const objResult = decodedResult ? JSON.parse(decodedResult) : null;
 
         data = objResult;
       } catch (e) {
         console.log('Error decoding result', e);
       }
 
-      // If data is null or doesn't have all fields, return null
-      if (!data || !data.result || !data.username || !data.address) {
-        data.result = -1;
-        error = true;
-      }
+      // If data is null return error
+      if (!data) error = true;
 
       return {
         id,
