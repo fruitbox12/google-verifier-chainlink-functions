@@ -5,7 +5,7 @@ Right now (2023-01-27), your EOA should be whitelisted to interact with the Func
 1. Clone this repo
 
 ```bash
-$ git clone git@github.com:polar0/twitter-verifier-chainlink-functions.git
+$ git clone git@github.com:0xpolarzero/twitter-verifier-chainlink-functions.git
 ```
 
 2. Install dependencies
