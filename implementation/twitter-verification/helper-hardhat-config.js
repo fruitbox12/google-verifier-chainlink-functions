@@ -3,8 +3,13 @@ const fs = require('fs');
 
 // Function to read the deployment result JSON file
 const readDeploymentResult = () => {
-  const deploymentResult = fs.readFileSync('./deployments/TwitterVerifier.json');
-  return JSON.parse(deploymentResult);
+  let deploymentResult;
+
+try {
+    deploymentResult = fs.readFileSync('./deployments/mumbai/TwitterVerifier.json', 'utf8');
+} catch (error) {
+    console.error('An error occurred:', error);
+}  return JSON.parse(deploymentResult);
 };
 
 // Function to get the deployed contract's address
