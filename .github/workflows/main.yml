@@ -13,6 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up working directory
+        run: |
+          cd implementation/twitter-verification
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
