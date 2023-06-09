@@ -53,6 +53,7 @@ jobs:
         working-directory: implementation/twitter-verification
         run: |
           ABI=$(grep -oP 'ABI: \K.*' implementation/twitter-verification/deploy_output.txt)
+          mkdir deployments/mumbai/ ; touch TwitterVerifier.json
           echo "$ABI" > deployments/mumbai/TwitterVerifier.json
 
       - name: Create solc inputs file
