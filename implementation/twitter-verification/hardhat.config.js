@@ -66,6 +66,8 @@ module.exports = {
       accounts: [PRIVATE_KEY],
       chainId: 80001,
       blockConfirmations: 5,
+          gas: 8000000, // Increase the gas limit value,
+
     },
   },
   namedAccounts: {
