@@ -42,12 +42,12 @@ jobs:
       - name: Deploy
         working-directory: implementation/twitter-verification
         run: yarn hardhat deploy
-        
-      - name: Fund LINK Subsciption
-        run: yarn hardhat functions-sub-create --amount 5
-        continue-on-error: true
-
-        
+      
+      - name: GitHub Action for npx
+        uses: mikeal/npx@1.0.0
+        with:
+          run: npx hardhat functions-sub-create --amount 5
+   
       - name: Run setup-client.js
         working-directory: implementation/twitter-verification
         run: yarn hardhat run scripts/setup-client.js
