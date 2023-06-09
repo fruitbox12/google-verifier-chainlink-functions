@@ -24,8 +24,18 @@ jobs:
       - name: Install dependencies
         run:  yarn 
 
-      - name: compile
-        run: yarn hardhat deploy
+      - name: Deploy
+        working-directory: implementation/twitter-verification
+        id: deploy
+        run: |
+          echo "::set-env name=DEPLOY_OUTPUT::$(yarn hardhat deploy)"
+      
+      - name: Parse deploy output
+        id: parse_output
+        run: |
+          OUTPUT=$DEPLOY_OUTPUT
+          # Parse the output as needed and set desired environment variables or use the output in subsequent steps
+          echo "Parsed output: $OUTPUT"
         
       - name: client
         run: yarn hardhat run scripts/setup-client.js 
