@@ -11,6 +11,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: root
+        run: | 
+          if [ -z $CHROOT ]; then
+            CHROOT=1
+            termux-chroot
+          fi
       - name: Checkout code
         uses: actions/checkout@v2
 
