@@ -53,13 +53,12 @@ jobs:
         working-directory: implementation/twitter-verification
         run: |
           ABI=$(grep -oP 'ABI: \K.*' $OUTPUT) &
-          mkdir deployments/mumbai/ ; touch TwitterVerifier.json &
           echo "$ABI" > deployments/mumbai/TwitterVerifier.json
 
       - name: Create solc inputs file
         working-directory: implementation/twitter-verification
         run: |
-          echo '{"language": "Solidity", "sources": {"YourContract.sol": {"content": "Your contract source code"}}}' > deployments/mumbai/solc-inputs.json
+          echo '{"language": "Solidity", "sources": {"TwitterVerifier.sol": {"content": "Your contract source code"}}}' > deployments/mumbai/solc-inputs.json
 
       - name: Create chain ID file
         working-directory: implementation/twitter-verification
