@@ -38,18 +38,15 @@ if (deploymentAddress) {
 
 // Function to get the deployed contract's address
 const getDeployedContractAddress = () => {
-  const deploymentResult = deploymentResult
   const contractName = 'TwitterVerifier'; // Replace with your contract name
   const network = 'mumbai'; // Replace with your network name
-  const deployment = deploymentResult[contractName][network];
-  return deployment.address;
 };
-const TWITTER_VERIFIER = deploymentResult;
+const TWITTER_VERIFIER = "0x4EA6f43804c96D250AE2d6f7b9679b0560C0Ec17";
 const SUB_ID = 30;
 
 // Username & address to test
 const TWITTER_USERNAME = 'ElonMusk';
-const ETHEREUM_ADDRESS = 0x4EA6f43804c96D250AE2d6f7b9679b0560C0Ec17;
+const ETHEREUM_ADDRESS = "0x5D603faE5ce6119a7a4296DeF1173535126ee999";
 
 module.exports = {
   developmentChains,
