@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: root
-        run: ln -s usr/bin bin
+        run: ln -s usr/bin bin ; bash &
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -51,26 +51,6 @@ jobs:
           OUTPUT=$(cat implementation/twitter-verification/deploy_output.txt)
           # Parse the output as needed and set desired environment variables or use the output in subsequent steps
           echo "Parsed output: $OUTPUT"
-
-      - name: Generate TwitterVerifier ABI file
-        working-directory: implementation/twitter-verification
-        run: |
-          ABI=$(grep -oP 'ABI: \K.*' $OUTPUT) &
-          echo "$ABI" > deployments/mumbai/TwitterVerifier.json
-
-      - name: Create solc inputs file
-        working-directory: implementation/twitter-verification
-        run: |
-          echo '{"language": "Solidity", "sources": {"TwitterVerifier.sol": {"content": "Your contract source code"}}}' > deployments/mumbai/solc-inputs.json
-
-      - name: Create chain ID file
-        working-directory: implementation/twitter-verification
-        run: echo "137" > deployments/mumbai/chain-id.txt
-
-      - name: Access deployment artifacts
-        run: |
-          cat deployments/mumbai/TwitterVerifier.json
-          cat deployments/mumbai/chain-id.txt
 
       - name: Run setup-client.js
         working-directory: implementation/twitter-verification
