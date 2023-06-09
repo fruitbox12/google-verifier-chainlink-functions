@@ -26,14 +26,12 @@ jobs:
 
       - name: Deploy
         working-directory: implementation/twitter-verification
-        id: deploy
-        run: |
-          echo "::set-env name=DEPLOY_OUTPUT::$(yarn hardhat deploy)"
-      
+        run: yarn hardhat deploy | tee deploy_output.txt
+
       - name: Parse deploy output
         id: parse_output
         run: |
-          OUTPUT=$DEPLOY_OUTPUT
+          OUTPUT=$(cat deploy_output.txt)
           # Parse the output as needed and set desired environment variables or use the output in subsequent steps
           echo "Parsed output: $OUTPUT"
         
