@@ -2,19 +2,27 @@ const developmentChains = ['hardhat', 'localhost'];
 const fs = require('fs');
 
 // Function to read the deployment result JSON file
-const readDeploymentResult = () => {
-  let deploymentResult;
+function readDeploymentResult(filePath) {
+    try {
+        const data = fs.readFileSync(filePath, 'utf8');
+        if (!data) {
+            console.error('No data to parse');
+            return;
+        }
+        const result = JSON.parse(data);
+        return result;
+    } catch (error) {
+        console.error('An error occurred:', error);
+    }
+}
 
-try {
-    deploymentResult = fs.readFileSync('./deployments/mumbai/TwitterVerifier.json', 'utf8');
-} catch (error) {
-    console.error('An error occurred:', error);
-}  return JSON.parse(deploymentResult);
-};
+// then call the function with your file path
+const deploymentResult = readDeploymentResult('./deployments/mumbai/TwitterVerifier.json');
+
 
 // Function to get the deployed contract's address
 const getDeployedContractAddress = () => {
-  const deploymentResult = readDeploymentResult();
+  const deploymentResult = deploymentResult
   const contractName = 'YourContract'; // Replace with your contract name
   const network = 'mumbai'; // Replace with your network name
   const deployment = deploymentResult[contractName][network];
