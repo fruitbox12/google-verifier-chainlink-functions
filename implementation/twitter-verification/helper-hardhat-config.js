@@ -17,7 +17,7 @@ function readDeploymentResult(filePath) {
 }
 
 // then call the function with your file path
-const deploymentResult = readDeploymentResult('./deployments/mumbai/TwitterVerifier.json');
+const deploymentResult = readDeploymentResult('./deployments/mumbai/TwitterVerifier.json') || {};
 
 
 // Function to get the deployed contract's address
