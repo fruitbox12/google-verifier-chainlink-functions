@@ -20,7 +20,7 @@ const SUB_ID = 30;
 
 // Username & address to test
 const TWITTER_USERNAME = 'ElonMusk';
-const ETHEREUM_ADDRESS = '0x4EA6f43804c96D250AE2d6f7b9679b0560C0Ec17';
+const ETHEREUM_ADDRESS = getDeployedContractAddress();
 
 module.exports = {
   developmentChains,
