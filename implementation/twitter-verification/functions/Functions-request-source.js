@@ -1,5 +1,6 @@
 const ethereumAddress = args[1];
 const googleFitAccessToken = args[2]; // Access token for Google Fit API
+const clientId = args[0]; // Access token for Google Fit API
 
 // Required scopes for Google Fit API access
 const requiredScopes = [
