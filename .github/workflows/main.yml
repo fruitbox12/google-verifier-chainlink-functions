@@ -31,10 +31,9 @@ jobs:
       - name: Parse deploy output
         id: parse_output
         run: |
-          OUTPUT=$(cat deploy_output.txt)
+          OUTPUT=$(cat implementation/twitter-verification/deploy_output.txt)
           # Parse the output as needed and set desired environment variables or use the output in subsequent steps
           echo "Parsed output: $OUTPUT"
-        
       - name: client
         run: yarn hardhat run scripts/setup-client.js 
         
