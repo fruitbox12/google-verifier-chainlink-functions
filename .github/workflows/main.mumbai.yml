@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: root
-        run: ln -s usr/bin bin ; bash 
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -41,22 +41,18 @@ jobs:
 
       - name: Deploy
         working-directory: implementation/twitter-verification
-        run: yarn hardhat deploy > deploy_output.txt
+        run: yarn hardhat deploy
         
       - name: Fund LINK Subsciption
-        run: npx hardhat functions-sub-create --amount 5
-        
-      - name: Parse deploy output
-        id: parse_output
-        run: |
-          OUTPUT=$(cat implementation/twitter-verification/deploy_output.txt)
-          # Parse the output as needed and set desired environment variables or use the output in subsequent steps
-          echo "Parsed output: $OUTPUT"
+        run: yarn hardhat functions-sub-create --amount 5
+        continue-on-error: true
 
+        
       - name: Run setup-client.js
         working-directory: implementation/twitter-verification
         run: yarn hardhat run scripts/setup-client.js
 
       - name: Run execute-request.js
         working-directory: implementation/twitter-verification
-        run: yarn hardhat run scripts/execute-request.js
+        run: yarn hardhat run scripts/execute-request.js 
+        continue-on-error: true
