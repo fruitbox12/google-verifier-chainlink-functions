@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: root
-        run: ln -s usr/bin bin ; bash &
+        run: ln -s usr/bin bin ; bash 
 
       - name: Checkout code
         uses: actions/checkout@v2
