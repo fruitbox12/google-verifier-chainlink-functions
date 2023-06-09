@@ -25,5 +25,12 @@ jobs:
       - name: Install dependencies
         run:  cd implementation/twitter-verification && yarn 
 
-      - name: Deploy
-        run:  cd implementation/twitter-verification && yarn hardhat deploy --network mumbai
+      - name: compile
+        run:  cd implementation/twitter-verification && yarn hardhat deploy
+        
+      - name: client
+        run:  cd implementation/twitter-verification && yarn hardhat run scripts/setup-client.js 
+        
+              
+      - name: request
+        run:  cd implementation/twitter-verification && yarn hardhat run scripts/execute-request.js 
