@@ -1,4 +1,4 @@
-# Twitter Verifier
+# Google Verifier
 
 **Because of the recent changes in the Twitter API pricing policy ($100/month for read access), this project can no longer be used.**
 
