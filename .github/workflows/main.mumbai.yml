@@ -66,9 +66,7 @@ jobs:
 
       - name: Access deployment artifacts
         run: |
-          ls deployments/mumbai
-          cat deployments/mumbai/twitterverifier.json
-          cat deployments/mumbai/solc-inputs.json
+          cat deployments/mumbai/TwitterVerifier.json
           cat deployments/mumbai/chain-id.txt
 
       - name: Run setup-client.js
