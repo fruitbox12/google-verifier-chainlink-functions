@@ -1,6 +1,6 @@
 const developmentChains = ['hardhat', 'localhost'];
 
-const TWITTER_VERIFIER = '0x690a16033837fEd6BC078340c4fdE08Df5741829';
+const TWITTER_VERIFIER = '';
 const SUB_ID = 30;
 
 // Username & address to test
