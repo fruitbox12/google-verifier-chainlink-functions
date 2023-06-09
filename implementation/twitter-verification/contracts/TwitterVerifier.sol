@@ -11,7 +11,7 @@ import "./utils/AddressToString.sol";
  * @notice This contract is a demonstration of using Functions.
  * @notice NOT FOR PRODUCTION USE
  */
-contract GoogleVerifier is FunctionsClient, ConfirmedOwner {
+contract TwitterVerifier is FunctionsClient, ConfirmedOwner {
     using Functions for Functions.Request;
 
     bytes32 public latestRequestId;
