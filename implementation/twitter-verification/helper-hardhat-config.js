@@ -62,7 +62,7 @@ module.exports = {
       default: 0,
     },
     contractAddress: {
-      default: getDeployedContractAddress(),
+      default: "0x4EA6f43804c96D250AE2d6f7b9679b0560C0Ec17",
     },
   },
 };
