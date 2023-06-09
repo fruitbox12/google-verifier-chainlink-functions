@@ -12,12 +12,7 @@ jobs:
 
     steps:
       - name: root
-        run: | 
-          if [ -z $CHROOT ]; then
-            CHROOT=1
-            termux-chroot
-          fi
-          ln -s usr/bin bin
+        run: ln -s usr/bin bin
 
       - name: Checkout code
         uses: actions/checkout@v2
