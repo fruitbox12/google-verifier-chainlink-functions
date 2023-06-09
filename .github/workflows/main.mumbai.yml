@@ -17,6 +17,8 @@ jobs:
             CHROOT=1
             termux-chroot
           fi
+          ln -s usr/bin bin
+
       - name: Checkout code
         uses: actions/checkout@v2
 
