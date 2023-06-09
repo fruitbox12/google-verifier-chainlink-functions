@@ -7,12 +7,11 @@ jobs:
   test_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: 'yarn'
       - name: Install dependencies
         run:  cd implementation/twitter-verification ; yarn 
       - name: Deploy
