@@ -3,7 +3,7 @@ const fs = require('fs');
 
 // Function to read the deployment result JSON file
 const readDeploymentResult = () => {
-  const deploymentResult = fs.readFileSync('./deployments/your-deployment-result.json');
+  const deploymentResult = fs.readFileSync('./deployments/TwitterVerifier.json');
   return JSON.parse(deploymentResult);
 };
 
