@@ -26,7 +26,7 @@ jobs:
 
       - name: Deploy
         working-directory: implementation/twitter-verification
-        run: yarn hardhat deploy | tee deploy_output.txt
+        run: yarn hardhat deploy > deploy_output.txt
 
       - name: Parse deploy output
         id: parse_output
