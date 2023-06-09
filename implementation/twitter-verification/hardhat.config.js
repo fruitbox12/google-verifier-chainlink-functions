@@ -45,7 +45,7 @@ module.exports = {
       },
     ],
   },
-  defaultNetwork: 'hardhat',
+  defaultNetwork: 'mumbai',
   networks: {
     hardhat: {
       chainId: 31337,
