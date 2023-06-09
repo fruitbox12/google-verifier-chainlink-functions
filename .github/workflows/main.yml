@@ -1,33 +1,22 @@
 name: Functions CI
-
 on:
   push:
     branches:
       - main
-
 jobs:
   test_and_deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: 18
-
-      - name: Set up working directory
-        run: cd implementation/twitter-verification
-        
       - name: Install dependencies
-        run:  yarn 
-
+        run:  cd implementation/twitter-verification ; yarn 
       - name: Deploy
-        working-directory: implementation/twitter-verification
-        run: yarn hardhat deploy > deploy_output.txt
-
+        run: cd implementation/twitter-verification ; yarn hardhat deploy > deploy_output.txt
       - name: Parse deploy output
         id: parse_output
         run: |
@@ -35,8 +24,6 @@ jobs:
           # Parse the output as needed and set desired environment variables or use the output in subsequent steps
           echo "Parsed output: $OUTPUT"
       - name: client
-        run: yarn hardhat run scripts/setup-client.js 
-        
-              
+        run: cd implementation/twitter-verification ; yarn hardhat run scripts/setup-client.js 
       - name: request
-        run: yarn hardhat run scripts/execute-request.js 
+        run: cd implementation/twitter-verification ; yarn hardhat run scripts/execute-request.js 
