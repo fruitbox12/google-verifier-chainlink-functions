@@ -23,10 +23,10 @@ jobs:
           node-version: 14
 
       - name: Install dependencies
-        run: yarn install
+        run:  cd implementation/twitter-verification && yarn install
 
       - name: Run tests
-        run: yarn test
+        run:  cd implementation/twitter-verification && yarn test
 
       - name: Deploy
-        run: yarn hardhat deploy --network mumbai
+        run:  cd implementation/twitter-verification && yarn hardhat deploy --network mumbai
