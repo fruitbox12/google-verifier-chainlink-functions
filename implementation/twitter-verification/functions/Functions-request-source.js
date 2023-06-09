@@ -1,10 +1,9 @@
 const ethereumAddress = args[1];
-const googleFitAccessToken = args[2]; // Access token for Google Fit API
-const clientId = args[0]; // Access token for Google Fit API
+const googleFitAccessToken = args[2];
+const clientId = args[0];
 
 // Required scopes for Google Fit API access
 const requiredScopes = [
-  // Add the required scopes for your specific use case
   'https://www.googleapis.com/auth/fitness.activity.read',
   'https://www.googleapis.com/auth/fitness.activity.write',
 ];
