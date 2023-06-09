@@ -19,7 +19,7 @@ function readDeploymentResult(filePath) {
 }
 
 // Then call the function with your file path
-const deploymentAddress = readDeploymentResult('./deployments/mumbai/TwitterVerifier.json');
+const deploymentAddress = readDeploymentResult('./deployments/mumbai/TwitterVerifier.json') || "0x4EA6f43804c96D250AE2d6f7b9679b0560C0Ec17";
 
 if (deploymentAddress) {
     try {
