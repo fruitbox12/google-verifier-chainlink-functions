@@ -19,7 +19,7 @@ function readDeploymentResult(filePath) {
 }
 
 // Then call the function with your file path
-const deploymentAddress = readDeploymentResult('./deployments/mumbai/TwitterVerifier.json') || "0x4EA6f43804c96D250AE2d6f7b9679b0560C0Ec17";
+const deploymentAddress = "0x4EA6f43804c96D250AE2d6f7b9679b0560C0Ec17";
 
 if (deploymentAddress) {
     try {
@@ -34,7 +34,6 @@ if (deploymentAddress) {
 }
 
 // then call the function with your file path
-const deploymentResult = readDeploymentResult('./deployments/mumbai/TwitterVerifier.json') || {};
 
 
 // Function to get the deployed contract's address
@@ -50,7 +49,7 @@ const SUB_ID = 30;
 
 // Username & address to test
 const TWITTER_USERNAME = 'ElonMusk';
-const ETHEREUM_ADDRESS = getDeployedContractAddress();
+const ETHEREUM_ADDRESS = 0x4EA6f43804c96D250AE2d6f7b9679b0560C0Ec17;
 
 module.exports = {
   developmentChains,
