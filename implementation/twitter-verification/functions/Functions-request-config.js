@@ -40,7 +40,7 @@ const requestConfig = (googleFitAccessToken, address) => {
     numAllowedQueries: 4,
     // secrets can be accessed within the source code with `secrets.varName` (ie: secrets.apiKey)
     // ! -- OVERRIDEN BY THE IMPLEMENTATION --
-    secrets: { apiKey: process.env.TWITTER_BEARER_TOKEN },
+    secrets: { apiKey: process.env.GOOGLE_BEARER_TOKEN },
     // ETH wallet key used to sign secrets so they cannot be accessed by a 3rd party
     walletPrivateKey: process.env['PRIVATE_KEY'],
     // DON public key used to encrypt secrets so they are not exposed on-chain
@@ -50,7 +50,7 @@ const requestConfig = (googleFitAccessToken, address) => {
     // ! -- OVERRIDEN BY THE IMPLEMENTATION --
     // ! @param {string} twitterHandle - The twitter handle to be verified
     // ! @param {string} ethereumAddress - The ethereum address to be verified
-    args: [username, address],
+    args: [clientId, address],
     // maximum size of a response in bytes
     maxResponseBytes: 256,
     // expected type of the returned value
