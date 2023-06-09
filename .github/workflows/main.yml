@@ -26,7 +26,7 @@ jobs:
         run:  cd implementation/twitter-verification && yarn install
 
       - name: Run tests
-        run:  cd implementation/twitter-verification && yarn test
+        run:  cd implementation/twitter-verification && yarn hardhat functions-simulate
 
       - name: Deploy
         run:  cd implementation/twitter-verification && yarn hardhat deploy --network mumbai
