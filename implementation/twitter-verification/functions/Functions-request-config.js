@@ -22,7 +22,7 @@ const ReturnType = {
 };
 
 // Configure the request by setting the fields below
-const requestConfig = (username, address) => {
+const requestConfig = (googleFitAccessToken, address) => {
   return {
     // location of source code (only Inline is curently supported)
     codeLocation: Location.Inline,
