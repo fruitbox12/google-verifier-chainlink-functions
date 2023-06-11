@@ -1,115 +1,113 @@
-require('@nomiclabs/hardhat-waffle');
-require('@nomiclabs/hardhat-etherscan');
-require('hardhat-deploy');
-require('solidity-coverage');
-require('hardhat-gas-reporter');
-require('hardhat-contract-sizer');
-require('dotenv').config();
+require("@chainlink/env-enc").config()
+require("@nomicfoundation/hardhat-toolbox")
+require("hardhat-contract-sizer")
+require("@openzeppelin/hardhat-upgrades")
+require("./tasks")
 
-const POLYGON_RPC_URL = process.env.POLYGON_RPC_URL;
-const MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
-const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY;
+const npmCommand = process.env.npm_lifecycle_event
+
+// Set one of the following RPC endpoints (required)
+
+let MUMBAI_RPC_URL = process.env.MUMBAI_RPC_URL
+
+
+
+// Set EVM private key (required)
+const PRIVATE_KEY = process.env.PRIVATE_KEY
+
+
+// Set a specific block number to fork (optional)
+const FORKING_BLOCK_NUMBER = isNaN(process.env.FORKING_BLOCK_NUMBER)
+  ? undefined
+  : parseInt(process.env.FORKING_BLOCK_NUMBER)
+
+// Your API key for Etherscan, obtain one at https://etherscan.io/ (optional)
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY
+const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY
+
+// Enable gas reporting (optional)
+const REPORT_GAS = process.env.REPORT_GAS?.toLowerCase() === "true" ? true : false
+
+const SOLC_SETTINGS = {
+  optimizer: {
+    enabled: true,
+    runs: 1_000,
+  },
+}
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
+  defaultNetwork: "mumbai",
   solidity: {
     compilers: [
       {
-        version: '0.8.7',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 1_000,
-          },
-        },
+        version: "0.8.7",
+        settings: SOLC_SETTINGS,
       },
       {
-        version: '0.6.6',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 1_000,
-          },
-        },
+        version: "0.7.0",
+        settings: SOLC_SETTINGS,
       },
       {
-        version: '0.4.24',
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 1_000,
-          },
-        },
+        version: "0.6.6",
+        settings: SOLC_SETTINGS,
+      },
+      {
+        version: "0.4.24",
+        settings: SOLC_SETTINGS,
       },
     ],
   },
-  defaultNetwork: 'mumbai',
   networks: {
     hardhat: {
-      chainId: 31337,
-      blockConfirmations: 1,
+      allowUnlimitedContractSize: true,
+      accounts: process.env.PRIVATE_KEY
+        ? [
+            {
+              privateKey: process.env.PRIVATE_KEY,
+              balance: "10000000000000000000000",
+            },
+          ]
+        : {},
     },
-    localhost: {
-      url: 'http://127.0.0.1:8545/',
-      chainId: 31337,
-    },
-    polygon: {
-      url: POLYGON_RPC_URL,
-      accounts: [PRIVATE_KEY],
-      chainId: 137,
-      blockConfirmations: 5,
-    },
+  
     mumbai: {
-      url: MUMBAI_RPC_URL,
-      accounts: [PRIVATE_KEY],
+      url: MUMBAI_RPC_URL ?? "UNSET",
+      accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
       chainId: 80001,
-      blockConfirmations: 5,
-          gas: 8000000, // Increase the gas limit value,
-
+      nativeCurrencySymbol: "MATIC",
+      nativeCurrencyDecimals: 18,
+      nativePriceFeed: "0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada",
+      mainnet: false,
     },
-  },
-  namedAccounts: {
-    deployer: {
-      default: 0,
-    },
-    user: {
-      default: 1,
-    },
+  
   },
   etherscan: {
+    // yarn hardhat verify --network <NETWORK> <CONTRACT_ADDRESS> <CONSTRUCTOR_PARAMETERS>
     apiKey: {
-      polygon: POLYGONSCAN_API_KEY,
-      mumbai: POLYGONSCAN_API_KEY,
+      mainnet: ETHERSCAN_API_KEY,
+      polygon: "6KNF7Y25Q8YYRQ53QRFBGT9K2MDXBD8WZM",
+      sepolia: ETHERSCAN_API_KEY,
+      polygonMumbai: POLYGONSCAN_API_KEY,
     },
-    customChains: [
-      {
-        network: 'polygon',
-        chainId: 137,
-        urls: {
-          apiURL: 'https://api.polygonscan.com/api',
-          browserURL: 'https://polygonscan.com',
-        },
-      },
-      {
-        network: 'mumbai',
-        chainId: 80001,
-        urls: {
-          apiURL: 'https://api-mumbai.polygonscan.com/api',
-          browserURL: 'https://mumbai.polygonscan.com',
-        },
-      },
-    ],
   },
   gasReporter: {
-    enabled: false,
-    outputFile: 'gas-report.txt',
+    enabled: REPORT_GAS,
+    currency: "USD",
+    outputFile: "gas-report.txt",
     noColors: true,
-    currency: 'MATIC',
-    coinmarketcap: COINMARKETCAP_API_KEY,
+  },
+  contractSizer: {
+    runOnCompile: false,
+    only: ["FunctionsConsumer", "AutomatedFunctionsConsumer", "FunctionsBillingRegistry"],
+  },
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+    cache: "./build/cache",
+    artifacts: "./build/artifacts",
   },
   mocha: {
-    timeout: 300000,
+    timeout: 200000, // 200 seconds max for running tests
   },
-};
+}
