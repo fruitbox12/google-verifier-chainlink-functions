@@ -1,4 +1,3 @@
-require("@chainlink/env-enc").config()
 require("@nomicfoundation/hardhat-toolbox")
 require("hardhat-contract-sizer")
 require("@openzeppelin/hardhat-upgrades")
